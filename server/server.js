@@ -75,6 +75,15 @@ function isHttps(req) {
 
 app.post("/api/admin/login", (req, res) => {
   const { password } = req.body || {};
+  // Құпия мәндерді ЕШҚАШАН логқа жазбаймыз — тек диагностика үшін
+  // ұзындығы мен түрін ғана жазамыз.
+  console.log(
+    "[admin/login] body type=%s, password received: %s (len=%s), expected len=%s, match=%s",
+    typeof req.body, password === undefined ? "жоқ" : "бар",
+    typeof password === "string" ? password.length : "н/б",
+    ADMIN_PASSWORD.length,
+    password === ADMIN_PASSWORD
+  );
   if (password !== ADMIN_PASSWORD) {
     return res.status(401).json({ error: "wrong_password" });
   }
