@@ -28,7 +28,19 @@ if (!process.env.ADMIN_PASSWORD) {
   );
 }
 
-app.use(express.json({ limit: "1mb" }));
+// Vercel-дің Node.js функциялары кейде JSON денені өзі алдын ала оқып,
+// req.body-ға жазып қояды (сонда ағын таусылып, express.json() бос
+// объект қайтарады). Бұл жағдайды таниды да, қайта талдамайды; егер
+// Vercel денені жолдан (string) ретінде берсе, өзіміз JSON.parse жасаймыз.
+app.use((req, res, next) => {
+  if (req.body !== undefined) {
+    if (typeof req.body === "string" && req.body.length) {
+      try { req.body = JSON.parse(req.body); } catch (e) { /* бос немесе JSON емес дене */ }
+    }
+    return next();
+  }
+  express.json({ limit: "1mb" })(req, res, next);
+});
 app.use(express.static(path.join(__dirname, "..", "public")));
 
 // ---------- Қарапайым cookie-негізді әкімші сессиясы ----------
