@@ -15,32 +15,13 @@
     }
   }
 
-  const loginView = document.getElementById("loginView");
   const dashboardView = document.getElementById("dashboardView");
-  const adminBar = document.getElementById("adminBar");
-  const loginForm = document.getElementById("loginForm");
-  const loginError = document.getElementById("loginError");
+  const loadError = document.getElementById("loadError");
 
   async function fetchData() {
-    const res = await fetch("/api/admin/data", { credentials: "same-origin" });
-    if (res.status === 401) {
-      showLogin();
-      return null;
-    }
+    const res = await fetch("/api/panel-fc1a5bd32b98/data");
     if (!res.ok) throw new Error("Деректерді алу мүмкін болмады (" + res.status + ")");
     return res.json();
-  }
-
-  function showLogin() {
-    loginView.hidden = false;
-    dashboardView.hidden = true;
-    adminBar.hidden = true;
-  }
-
-  function showDashboard() {
-    loginView.hidden = true;
-    dashboardView.hidden = false;
-    adminBar.hidden = false;
   }
 
   function renderStages(stages) {
@@ -143,8 +124,7 @@
 
   async function loadAll() {
     const data = await fetchData();
-    if (!data) return;
-    showDashboard();
+    loadError.hidden = true;
     renderStages(data.lessonPlan.STAGES);
     renderAnswerKey(data.lessonPlan.ANSWER_KEY);
     renderGrading(data.lessonPlan.GRADING);
@@ -152,37 +132,15 @@
     renderPairs(data.pairShares, data.pairReviews);
   }
 
-  loginForm.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    loginError.hidden = true;
-    const password = document.getElementById("passwordInput").value;
-    try {
-      const res = await fetch("/api/admin/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "same-origin",
-        body: JSON.stringify({ password }),
-      });
-      if (!res.ok) {
-        loginError.textContent = "Пароль қате. Қайталап көріңіз.";
-        loginError.hidden = false;
-        return;
-      }
-      await loadAll();
-    } catch (err) {
-      loginError.textContent = "Серверге қосылу мүмкін болмады.";
-      loginError.hidden = false;
-    }
-  });
-
   document.getElementById("btnRefresh").addEventListener("click", () => {
-    loadAll().catch((e) => alert("Жаңарту сәтсіз: " + e.message));
+    loadAll().catch((e) => {
+      loadError.textContent = "Жаңарту сәтсіз: " + e.message;
+      loadError.hidden = false;
+    });
   });
 
-  document.getElementById("btnLogout").addEventListener("click", async () => {
-    await fetch("/api/admin/logout", { method: "POST", credentials: "same-origin" });
-    showLogin();
+  loadAll().catch((e) => {
+    loadError.textContent = "Деректерді жүктеу мүмкін болмады: " + e.message;
+    loadError.hidden = false;
   });
-
-  loadAll().catch(() => showLogin());
 })();

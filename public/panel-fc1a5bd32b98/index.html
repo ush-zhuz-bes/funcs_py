@@ -14,29 +14,17 @@
       <span class="brand-name">Function Lab</span>
       <span class="brand-sub">Әкімші панелі — тек оқытушыға арналған</span>
     </div>
-    <div id="adminBar" class="admin-bar" hidden>
+    <div id="adminBar" class="admin-bar">
       <button type="button" class="btn btn-primary" id="btnRefresh">Жаңарту</button>
-      <button type="button" class="btn btn-ghost" id="btnLogout">Шығу</button>
     </div>
   </div>
 </header>
 
 <main id="main-content">
 
-  <section id="loginView" class="card" style="max-width:420px;margin:60px auto;">
-    <h2>Әкімші кірісі</h2>
-    <p class="hint">Бұл бет сабақ жоспарын, жауап кілтін және студенттердің жауаптарын көрсетеді. Кіру үшін әкімші паролін енгізіңіз.</p>
-    <form id="loginForm">
-      <label class="field-block">
-        <span>Пароль</span>
-        <input type="password" id="passwordInput" autocomplete="current-password" required>
-      </label>
-      <button type="submit" class="btn btn-primary">Кіру</button>
-      <p class="hint status-error" id="loginError" hidden></p>
-    </form>
-  </section>
+  <p class="hint" id="loadError" hidden style="margin:16px;"></p>
 
-  <div id="dashboardView" hidden>
+  <div id="dashboardView">
 
     <section class="lesson-section" data-section="plan">
       <div class="section-head">

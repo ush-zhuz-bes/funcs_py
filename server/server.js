@@ -2,31 +2,24 @@
 // Студенттік статикалық сайтты (public/) беріп, сонымен қатар жауаптарды
 // орталықтандырып жинайтын және оқытушының әкімші панеліне арналған API-ды
 // қамтамасыз етеді.
+//
+// Әкімші панелі парольмен емес, болжауға келмейтін жол (slug) арқылы
+// қорғалған: /panel-fc1a5bd32b98/ (бет) және /api/panel-fc1a5bd32b98/data
+// (деректер API-сы). Осы атауды білмеген адам деректерге жете алмайды.
+// Бұл сілтемені студенттерге таратпаңыз.
 "use strict";
 
 const path = require("path");
-const crypto = require("crypto");
 const express = require("express");
 
 const store = require("./store");
 const { partnerOf } = require("./pairs");
 const lessonPlan = require("./lesson-plan");
 
+const ADMIN_SLUG = "panel-fc1a5bd32b98";
+
 const app = express();
 const PORT = process.env.PORT || 3000;
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "ustaz2026";
-// Vercel-де әр "суық старт" жаңа процесс болғандықтан, кездейсоқ құпия
-// сессияны буза бермеуі үшін ADMIN_SECRET берілмесе, тұрақты (бірақ
-// ADMIN_PASSWORD-қа тәуелді) мәннен шығарамыз — кездейсоқ байт емес.
-const SESSION_SECRET = process.env.ADMIN_SECRET
-  || crypto.createHash("sha256").update("functionlab-session::" + ADMIN_PASSWORD).digest("hex");
-
-if (!process.env.ADMIN_PASSWORD) {
-  console.warn(
-    '[Function Lab] ЕСКЕРТУ: ADMIN_PASSWORD орнатылмаған, әдепкі пароль "ustaz2026" қолданылады. ' +
-    "Нақты серверге (интернетке) шығармас бұрын ADMIN_PASSWORD орнатыңыз."
-  );
-}
 
 // Vercel-дің Node.js функциялары кейде JSON денені өзі алдын ала оқып,
 // req.body-ға жазып қояды (сонда ағын таусылып, express.json() бос
@@ -43,64 +36,7 @@ app.use((req, res, next) => {
 });
 app.use(express.static(path.join(__dirname, "..", "public")));
 
-// ---------- Қарапайым cookie-негізді әкімші сессиясы ----------
-
-function sessionToken() {
-  return crypto.createHmac("sha256", SESSION_SECRET).update(ADMIN_PASSWORD).digest("hex");
-}
-
-function parseCookies(req) {
-  const header = req.headers.cookie;
-  const out = {};
-  if (!header) return out;
-  header.split(";").forEach((part) => {
-    const idx = part.indexOf("=");
-    if (idx === -1) return;
-    const key = part.slice(0, idx).trim();
-    const val = part.slice(idx + 1).trim();
-    out[key] = decodeURIComponent(val);
-  });
-  return out;
-}
-
-function requireAdmin(req, res, next) {
-  const cookies = parseCookies(req);
-  if (cookies.admin_session === sessionToken()) return next();
-  res.status(401).json({ error: "unauthorized" });
-}
-
-function isHttps(req) {
-  return req.secure || req.headers["x-forwarded-proto"] === "https";
-}
-
-app.post("/api/admin/login", (req, res) => {
-  const { password } = req.body || {};
-  // Құпия мәндерді ЕШҚАШАН логқа жазбаймыз — тек диагностика үшін
-  // ұзындығы мен түрін ғана жазамыз.
-  console.log(
-    "[admin/login] body type=%s, password received: %s (len=%s), expected len=%s, match=%s",
-    typeof req.body, password === undefined ? "жоқ" : "бар",
-    typeof password === "string" ? password.length : "н/б",
-    ADMIN_PASSWORD.length,
-    password === ADMIN_PASSWORD
-  );
-  if (password !== ADMIN_PASSWORD) {
-    return res.status(401).json({ error: "wrong_password" });
-  }
-  const secureFlag = isHttps(req) ? "; Secure" : "";
-  res.setHeader(
-    "Set-Cookie",
-    `admin_session=${encodeURIComponent(sessionToken())}; HttpOnly; Path=/; SameSite=Lax; Max-Age=${60 * 60 * 12}${secureFlag}`
-  );
-  res.json({ ok: true });
-});
-
-app.post("/api/admin/logout", (req, res) => {
-  res.setHeader("Set-Cookie", "admin_session=; HttpOnly; Path=/; Max-Age=0");
-  res.json({ ok: true });
-});
-
-app.get("/api/admin/data", requireAdmin, async (req, res) => {
+app.get(`/api/${ADMIN_SLUG}/data`, async (req, res) => {
   try {
     const [students, pairData] = await Promise.all([store.listStudents(), store.allPairData()]);
     res.json({ lessonPlan: lessonPlan, students, ...pairData });
@@ -171,7 +107,7 @@ app.get("/api/pair/feedback", async (req, res) => {
 if (require.main === module) {
   app.listen(PORT, () => {
     console.log(`Function Lab сервері іске қосылды: http://localhost:${PORT}`);
-    console.log(`Әкімші панелі: http://localhost:${PORT}/admin/`);
+    console.log(`Әкімші панелі: http://localhost:${PORT}/${ADMIN_SLUG}/`);
   });
 }
 
