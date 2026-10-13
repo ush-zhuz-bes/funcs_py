@@ -15,7 +15,11 @@ const lessonPlan = require("./lesson-plan");
 const app = express();
 const PORT = process.env.PORT || 3000;
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "ustaz2026";
-const SESSION_SECRET = process.env.ADMIN_SECRET || crypto.randomBytes(32).toString("hex");
+// Vercel-де әр "суық старт" жаңа процесс болғандықтан, кездейсоқ құпия
+// сессияны буза бермеуі үшін ADMIN_SECRET берілмесе, тұрақты (бірақ
+// ADMIN_PASSWORD-қа тәуелді) мәннен шығарамыз — кездейсоқ байт емес.
+const SESSION_SECRET = process.env.ADMIN_SECRET
+  || crypto.createHash("sha256").update("functionlab-session::" + ADMIN_PASSWORD).digest("hex");
 
 if (!process.env.ADMIN_PASSWORD) {
   console.warn(
@@ -53,14 +57,19 @@ function requireAdmin(req, res, next) {
   res.status(401).json({ error: "unauthorized" });
 }
 
+function isHttps(req) {
+  return req.secure || req.headers["x-forwarded-proto"] === "https";
+}
+
 app.post("/api/admin/login", (req, res) => {
   const { password } = req.body || {};
   if (password !== ADMIN_PASSWORD) {
     return res.status(401).json({ error: "wrong_password" });
   }
+  const secureFlag = isHttps(req) ? "; Secure" : "";
   res.setHeader(
     "Set-Cookie",
-    `admin_session=${encodeURIComponent(sessionToken())}; HttpOnly; Path=/; SameSite=Lax; Max-Age=${60 * 60 * 12}`
+    `admin_session=${encodeURIComponent(sessionToken())}; HttpOnly; Path=/; SameSite=Lax; Max-Age=${60 * 60 * 12}${secureFlag}`
   );
   res.json({ ok: true });
 });
@@ -70,55 +79,79 @@ app.post("/api/admin/logout", (req, res) => {
   res.json({ ok: true });
 });
 
-app.get("/api/admin/data", requireAdmin, (req, res) => {
-  res.json({
-    lessonPlan: lessonPlan,
-    students: store.listStudents(),
-    ...store.allPairData(),
-  });
+app.get("/api/admin/data", requireAdmin, async (req, res) => {
+  try {
+    const [students, pairData] = await Promise.all([store.listStudents(), store.allPairData()]);
+    res.json({ lessonPlan: lessonPlan, students, ...pairData });
+  } catch (e) {
+    res.status(500).json({ error: "server_error", message: e.message });
+  }
 });
 
 // ---------- Студент API ----------
 
-app.post("/api/submit", (req, res) => {
+app.post("/api/submit", async (req, res) => {
   try {
-    const saved = store.upsertStudent(req.body || {});
+    const saved = await store.upsertStudent(req.body || {});
     res.json({ ok: true, updatedAt: saved.updatedAt });
   } catch (e) {
     res.status(400).json({ ok: false, error: e.message });
   }
 });
 
-app.post("/api/pair/send", (req, res) => {
-  const { studentId, studentName, variantId, code } = req.body || {};
-  if (!studentId || !variantId) return res.status(400).json({ error: "variantId/studentId жоқ" });
-  const share = store.addPairShare({ studentId, studentName, variantId, code });
-  res.json({ ok: true, share });
+app.post("/api/pair/send", async (req, res) => {
+  try {
+    const { studentId, studentName, variantId, code } = req.body || {};
+    if (!studentId || !variantId) return res.status(400).json({ error: "variantId/studentId жоқ" });
+    const share = await store.addPairShare({ studentId, studentName, variantId, code });
+    res.json({ ok: true, share });
+  } catch (e) {
+    res.status(500).json({ error: "server_error", message: e.message });
+  }
 });
 
-app.get("/api/pair/inbox", (req, res) => {
-  const variantId = Number(req.query.variantId);
-  if (!variantId) return res.status(400).json({ error: "variantId жоқ" });
-  const partner = partnerOf(variantId);
-  if (!partner) return res.status(400).json({ error: "жұп табылмады" });
-  const share = store.latestShareForVariant(partner);
-  res.json({ share });
+app.get("/api/pair/inbox", async (req, res) => {
+  try {
+    const variantId = Number(req.query.variantId);
+    if (!variantId) return res.status(400).json({ error: "variantId жоқ" });
+    const partner = partnerOf(variantId);
+    if (!partner) return res.status(400).json({ error: "жұп табылмады" });
+    const share = await store.latestShareForVariant(partner);
+    res.json({ share });
+  } catch (e) {
+    res.status(500).json({ error: "server_error", message: e.message });
+  }
 });
 
-app.post("/api/pair/review", (req, res) => {
-  const { shareId, studentId, studentName, variantId, condition, observed, conclusion } = req.body || {};
-  if (!shareId || !variantId) return res.status(400).json({ error: "shareId/variantId жоқ" });
-  const review = store.addPairReview({ shareId, studentId, studentName, variantId, condition, observed, conclusion });
-  res.json({ ok: true, review });
+app.post("/api/pair/review", async (req, res) => {
+  try {
+    const { shareId, studentId, studentName, variantId, condition, observed, conclusion } = req.body || {};
+    if (!shareId || !variantId) return res.status(400).json({ error: "shareId/variantId жоқ" });
+    const review = await store.addPairReview({ shareId, studentId, studentName, variantId, condition, observed, conclusion });
+    res.json({ ok: true, review });
+  } catch (e) {
+    res.status(500).json({ error: "server_error", message: e.message });
+  }
 });
 
-app.get("/api/pair/feedback", (req, res) => {
-  const variantId = Number(req.query.variantId);
-  if (!variantId) return res.status(400).json({ error: "variantId жоқ" });
-  res.json({ reviews: store.feedbackForVariant(variantId) });
+app.get("/api/pair/feedback", async (req, res) => {
+  try {
+    const variantId = Number(req.query.variantId);
+    if (!variantId) return res.status(400).json({ error: "variantId жоқ" });
+    res.json({ reviews: await store.feedbackForVariant(variantId) });
+  } catch (e) {
+    res.status(500).json({ error: "server_error", message: e.message });
+  }
 });
 
-app.listen(PORT, () => {
-  console.log(`Function Lab сервері іске қосылды: http://localhost:${PORT}`);
-  console.log(`Әкімші панелі: http://localhost:${PORT}/admin/`);
-});
+// Vercel серверлесс функциясы ретінде импортталғанда (api/[...path].js),
+// Express app-ты өзін (req,res) өңдегіш ретінде экспорттаймыз. Жергілікті
+// `node server/server.js` арқылы іске қосқанда ғана порт тыңдаймыз.
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`Function Lab сервері іске қосылды: http://localhost:${PORT}`);
+    console.log(`Әкімші панелі: http://localhost:${PORT}/admin/`);
+  });
+}
+
+module.exports = app;
