@@ -17,19 +17,27 @@ function storageAvailable() {
 
 export const SAVE_AVAILABLE = storageAvailable();
 
+function makeStudentId() {
+  if (window.crypto && typeof window.crypto.randomUUID === "function") return window.crypto.randomUUID();
+  return "sid-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 10);
+}
+
 function defaultState() {
   return {
+    studentId: makeStudentId(),
     studentName: "",
     groupName: "",
     selectedVariant: null,
     visitedSections: {},
+    submittedSections: {}, // { "start": "2026-10-14T...", ... } — серверге жіберілген уақыт
     theory: { code: "" },
     predictMain: { predictionOutput: "", predictionResult: "", explained: false },
     predictFix: { code: "", runCount: 0, revealed: false },
     variantCodes: {}, // { "1": "код...", ... }
     discussionAnswer: "",
     testResults: {}, // { "1": { normal: {...}, qty0: {...}, disc0: {...}, lastTestedCode: "" } }
-    pairReviews: [], // [{author, variant, funcName, reviewer, condition, observed, conclusion, ts}]
+    pairSentAt: null, // серіктеске соңғы рет код жіберілген уақыт
+    receivedFeedback: [], // серіктестен келген пікірлер (серверден алынып, осында кэштеледі)
     defenseAnswers: { params: "", result: "", test: "" },
     reflection: { q1: "", q2: "", stem1: "", stem2: "" },
   };

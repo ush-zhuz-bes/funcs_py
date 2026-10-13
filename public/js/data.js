@@ -57,6 +57,13 @@ export function getVariant(id) {
   return VARIANTS.find((v) => v.id === Number(id)) || null;
 }
 
+// Жұптық тексеруге арналған тұрақты жұптасу (серверде де қайталанған — server/pairs.js).
+export const PAIR_MAP = { 1: 2, 2: 1, 3: 4, 4: 3, 5: 6, 6: 5, 7: 8, 8: 7 };
+
+export function partnerVariantId(variantId) {
+  return PAIR_MAP[Number(variantId)] || null;
+}
+
 // Дұрыс мәндерді әрқашан осы формула арқылы есептейміз — жауап кілтін
 // қолмен қайта теріп, қате жібермеу үшін.
 export function trueResult(price, quantity, discount) {

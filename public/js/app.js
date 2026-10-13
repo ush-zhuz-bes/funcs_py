@@ -98,6 +98,60 @@ document.querySelectorAll("[data-next]").forEach((b) => {
 applyVisitedMarks();
 showSection("start", { focus: false });
 
+// ---------- Серверге жіберу («Жауаптарды оқытушыға жіберу») ----------
+
+function buildSubmitPayload(section) {
+  const variant = getVariant(state.selectedVariant);
+  const rec = variant ? state.testResults[variant.id] : null;
+  const finalPayment = (rec && rec.normal && typeof rec.normal.actualValue === "number" && variant)
+    ? rec.normal.actualValue + variant.fee : null;
+  return {
+    studentId: state.studentId,
+    studentName: state.studentName,
+    groupName: state.groupName,
+    section,
+    variantId: variant ? variant.id : null,
+    funcName: variant ? variant.funcName : "",
+    code: variant ? (state.variantCodes[variant.id] || "") : "",
+    testResults: rec || null,
+    finalPayment,
+    defenseAnswers: state.defenseAnswers,
+    reflection: state.reflection,
+    discussionAnswer: state.discussionAnswer,
+    predictAnswers: { q1: state.predictMain.predictionOutput, q2: state.predictMain.predictionResult },
+  };
+}
+
+async function submitSection(section, btn, statusEl) {
+  btn.disabled = true;
+  statusEl.textContent = "Жіберілуде…";
+  statusEl.classList.remove("status-error");
+  try {
+    const res = await fetch("/api/submit", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(buildSubmitPayload(section)),
+    });
+    if (!res.ok) throw new Error("сервер қатесі");
+    state.submittedSections[section] = new Date().toISOString();
+    saveState();
+    statusEl.textContent = "Жіберілді ✓ · " + new Date().toLocaleTimeString("kk-KZ");
+  } catch (e) {
+    statusEl.textContent = "Жіберу мүмкін болмады. Интернет байланысын тексеріп, қайталап көріңіз.";
+    statusEl.classList.add("status-error");
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+document.querySelectorAll("[data-submit-section]").forEach((btn) => {
+  const section = btn.dataset.submitSection;
+  const statusEl = document.querySelector(`[data-submit-status="${section}"]`);
+  if (state.submittedSections[section] && statusEl) {
+    statusEl.textContent = "Жіберілді ✓ · " + new Date(state.submittedSections[section]).toLocaleTimeString("kk-KZ");
+  }
+  btn.addEventListener("click", () => submitSection(section, btn, statusEl));
+});
+
 // ---------- 1. Бастау ----------
 
 bindField(document.getElementById("discussionAnswer"), () => state.discussionAnswer, (v) => { state.discussionAnswer = v; });
@@ -204,7 +258,6 @@ btnRevealFixed.addEventListener("click", () => {
 const variantSelect = document.getElementById("variantSelect");
 const variantDetailCard = document.getElementById("variantDetailCard");
 const variantEditorHost = document.getElementById("variantEditorHost");
-const pairVariantSelect = document.getElementById("pairVariantSelect");
 const guidingQuestionsList = document.getElementById("guidingQuestionsList");
 
 GUIDING_QUESTIONS.forEach((q) => {
@@ -225,8 +278,6 @@ VARIANTS.forEach((v) => {
   opt1.value = v.id;
   opt1.textContent = `Нұсқа ${v.id} — ${v.title}`;
   variantSelect.appendChild(opt1);
-  const opt2 = opt1.cloneNode(true);
-  pairVariantSelect.appendChild(opt2);
 });
 
 let currentVariantEditor = null;
@@ -276,11 +327,10 @@ function selectVariant(id) {
   state.selectedVariant = variant.id;
   saveState();
   variantSelect.value = String(variant.id);
-  pairVariantSelect.value = String(variant.id);
-  updatePairFuncName();
   renderVariantDetail(variant);
   mountVariantEditor(variant);
   renderTestTable();
+  resetPairUi();
 }
 
 variantSelect.addEventListener("change", () => selectVariant(variantSelect.value));
@@ -453,59 +503,137 @@ function saveTestRow(variantId, key, studentExpected, actualValue, pass, code) {
   saveState();
 }
 
-// ---------- Жұптық тексеру ----------
+// ---------- Жұптық тексеру (сервер арқылы) ----------
 
-function updatePairFuncName() {
-  const v = getVariant(pairVariantSelect.value);
-  const input = document.querySelector('#pairReviewForm input[name="funcName"]');
-  if (v && input) input.value = v.funcName;
-}
-pairVariantSelect.addEventListener("change", updatePairFuncName);
-updatePairFuncName();
-
+const btnPairSend = document.getElementById("btnPairSend");
+const pairSendStatus = document.getElementById("pairSendStatus");
+const btnPairInbox = document.getElementById("btnPairInbox");
+const pairInboxBox = document.getElementById("pairInboxBox");
+const pairInboxMeta = document.getElementById("pairInboxMeta");
+const pairInboxCode = document.getElementById("pairInboxCode");
 const pairReviewForm = document.getElementById("pairReviewForm");
-const pairReviewList = document.getElementById("pairReviewList");
+const pairReviewStatus = document.getElementById("pairReviewStatus");
+const btnPairFeedback = document.getElementById("btnPairFeedback");
+const pairFeedbackList = document.getElementById("pairFeedbackList");
 
-function renderPairReviews() {
-  if (state.pairReviews.length === 0) {
-    pairReviewList.innerHTML = '<p class="hint">Әзірге жазба жоқ.</p>';
-    return;
-  }
-  pairReviewList.innerHTML = state.pairReviews.map((r, idx) => `
-    <div class="pair-entry">
-      <div class="pair-entry-head">
-        <strong>${escapeHtml(r.author)}</strong> — нұсқа ${escapeHtml(r.variant)} (${escapeHtml(r.funcName)}) ·
-        тексерген: ${escapeHtml(r.reviewer)} · жағдай: ${escapeHtml(r.condition)}
-        <button type="button" class="btn btn-small btn-ghost" data-remove-review="${idx}">Өшіру</button>
-      </div>
-      <p><strong>Байқалған нәтиже:</strong> ${escapeHtml(r.observed)}</p>
-      <p><strong>Қорытынды:</strong> ${escapeHtml(r.conclusion)}</p>
-    </div>
-  `).join("");
-  pairReviewList.querySelectorAll("[data-remove-review]").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      state.pairReviews.splice(Number(btn.dataset.removeReview), 1);
-      saveState();
-      renderPairReviews();
-    });
-  });
+let currentInboxShare = null;
+
+function resetPairUi() {
+  currentInboxShare = null;
+  pairInboxBox.hidden = true;
+  pairReviewForm.hidden = true;
+  pairSendStatus.textContent = state.pairSentAt ? `Соңғы жіберілген: ${new Date(state.pairSentAt).toLocaleTimeString("kk-KZ")}` : "";
+  pairFeedbackList.innerHTML = "";
 }
 
-pairReviewForm.addEventListener("submit", (e) => {
-  e.preventDefault();
-  const fd = new FormData(pairReviewForm);
-  state.pairReviews.push({
-    author: fd.get("author"), variant: fd.get("variant"), funcName: fd.get("funcName"),
-    reviewer: fd.get("reviewer"), condition: fd.get("condition"),
-    observed: fd.get("observed"), conclusion: fd.get("conclusion"), ts: Date.now(),
-  });
-  saveState();
-  renderPairReviews();
-  pairReviewForm.reset();
-  updatePairFuncName();
+btnPairSend.addEventListener("click", async () => {
+  const variant = getVariant(state.selectedVariant);
+  if (!variant) return;
+  const code = state.variantCodes[variant.id] || "";
+  btnPairSend.disabled = true;
+  pairSendStatus.textContent = "Жіберілуде…";
+  pairSendStatus.classList.remove("status-error");
+  try {
+    const res = await fetch("/api/pair/send", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ studentId: state.studentId, studentName: state.studentName, variantId: variant.id, code }),
+    });
+    if (!res.ok) throw new Error("сервер қатесі");
+    state.pairSentAt = Date.now();
+    saveState();
+    pairSendStatus.textContent = "Жіберілді ✓ — серіктесіңіз «Серіктестің кодын қарау» батырмасымен көре алады.";
+  } catch (e) {
+    pairSendStatus.textContent = "Жіберу мүмкін болмады. Интернет байланысын тексеріңіз.";
+    pairSendStatus.classList.add("status-error");
+  } finally {
+    btnPairSend.disabled = false;
+  }
 });
 
-renderPairReviews();
+btnPairInbox.addEventListener("click", async () => {
+  const variant = getVariant(state.selectedVariant);
+  if (!variant) return;
+  btnPairInbox.disabled = true;
+  try {
+    const res = await fetch(`/api/pair/inbox?variantId=${variant.id}`);
+    const data = await res.json();
+    if (!data.share) {
+      pairInboxBox.hidden = false;
+      pairInboxMeta.textContent = "Серіктесіңіз әлі код жіберген жоқ. Сәл кейін қайта басып көріңіз.";
+      pairInboxCode.textContent = "";
+      pairReviewForm.hidden = true;
+      currentInboxShare = null;
+      return;
+    }
+    currentInboxShare = data.share;
+    pairInboxBox.hidden = false;
+    pairInboxMeta.textContent = `Жіберуші: ${data.share.studentName || "аты жоқ"} (нұсқа ${data.share.variantId}) · ${new Date(data.share.sentAt).toLocaleTimeString("kk-KZ")}`;
+    pairInboxCode.textContent = data.share.code || "(код бос)";
+    pairReviewForm.hidden = false;
+  } catch (e) {
+    pairInboxBox.hidden = false;
+    pairInboxMeta.textContent = "Серіктестің кодын алу мүмкін болмады. Интернет байланысын тексеріңіз.";
+    pairInboxCode.textContent = "";
+  } finally {
+    btnPairInbox.disabled = false;
+  }
+});
+
+pairReviewForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  if (!currentInboxShare) return;
+  const variant = getVariant(state.selectedVariant);
+  const fd = new FormData(pairReviewForm);
+  const submitBtn = pairReviewForm.querySelector('button[type="submit"]');
+  submitBtn.disabled = true;
+  pairReviewStatus.textContent = "Жіберілуде…";
+  pairReviewStatus.classList.remove("status-error");
+  try {
+    const res = await fetch("/api/pair/review", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        shareId: currentInboxShare.id, studentId: state.studentId, studentName: fd.get("reviewer"),
+        variantId: variant.id, condition: fd.get("condition"), observed: fd.get("observed"), conclusion: fd.get("conclusion"),
+      }),
+    });
+    if (!res.ok) throw new Error("сервер қатесі");
+    pairReviewStatus.textContent = "Пікір жіберілді ✓";
+    pairReviewForm.reset();
+  } catch (e) {
+    pairReviewStatus.textContent = "Жіберу мүмкін болмады. Интернет байланысын тексеріңіз.";
+    pairReviewStatus.classList.add("status-error");
+  } finally {
+    submitBtn.disabled = false;
+  }
+});
+
+btnPairFeedback.addEventListener("click", async () => {
+  const variant = getVariant(state.selectedVariant);
+  if (!variant) return;
+  btnPairFeedback.disabled = true;
+  pairFeedbackList.innerHTML = '<p class="hint">Жүктелуде…</p>';
+  try {
+    const res = await fetch(`/api/pair/feedback?variantId=${variant.id}`);
+    const data = await res.json();
+    state.receivedFeedback = data.reviews || [];
+    saveState();
+    if (!data.reviews || data.reviews.length === 0) {
+      pairFeedbackList.innerHTML = '<p class="hint">Әзірге пікір келмеген.</p>';
+      return;
+    }
+    pairFeedbackList.innerHTML = data.reviews.map((r) => `
+      <div class="feedback-entry">
+        <p class="hint">Тексерген: ${escapeHtml(r.studentName) || "аты жоқ"} · жағдай: ${escapeHtml(r.condition)} · ${new Date(r.reviewedAt).toLocaleTimeString("kk-KZ")}</p>
+        <p><strong>Байқалған нәтиже:</strong> ${escapeHtml(r.observed)}</p>
+        <p><strong>Қорытынды:</strong> ${escapeHtml(r.conclusion)}</p>
+      </div>
+    `).join("");
+  } catch (e) {
+    pairFeedbackList.innerHTML = '<p class="hint status-error">Пікірлерді алу мүмкін болмады. Интернет байланысын тексеріңіз.</p>';
+  } finally {
+    btnPairFeedback.disabled = false;
+  }
+});
 
 bindField(document.getElementById("defenseQ1"), () => state.defenseAnswers.params, (v) => { state.defenseAnswers.params = v; });
 bindField(document.getElementById("defenseQ2"), () => state.defenseAnswers.result, (v) => { state.defenseAnswers.result = v; });
@@ -576,8 +704,8 @@ function buildReportHtml() {
   <p><strong>Нәтиже:</strong> ${escapeHtml(state.defenseAnswers.result)}</p>
   <p><strong>Тест:</strong> ${escapeHtml(state.defenseAnswers.test)}</p>
 
-  <h2>Жұптық кері байланыс</h2>
-  ${state.pairReviews.length === 0 ? "<p>Жазба жоқ.</p>" : state.pairReviews.map((r) => `<p><strong>${escapeHtml(r.author)}</strong> (нұсқа ${escapeHtml(r.variant)}) — тексерген: ${escapeHtml(r.reviewer)}, жағдай: ${escapeHtml(r.condition)}<br>Байқалған нәтиже: ${escapeHtml(r.observed)}<br>Қорытынды: ${escapeHtml(r.conclusion)}</p>`).join("")}
+  <h2>Серіктестен келген пікірлер</h2>
+  ${state.receivedFeedback.length === 0 ? "<p>Пікір жоқ (немесе әлі жүктелмеген — «Тексеру» бөліміндегі «Маған келген пікірлерді көру» батырмасын басыңыз).</p>" : state.receivedFeedback.map((r) => `<p>Тексерген: ${escapeHtml(r.studentName)}, жағдай: ${escapeHtml(r.condition)}<br>Байқалған нәтиже: ${escapeHtml(r.observed)}<br>Қорытынды: ${escapeHtml(r.conclusion)}</p>`).join("")}
 
   <h2>Қорытынды сұрақтар</h2>
   <p>1) ${escapeHtml(state.reflection.q1)}</p>

@@ -1,0 +1,37 @@
+/* Function Lab — әкімші панеліне қосымша стильдер (негізгі css/style.css үстіне) */
+
+.admin-bar { display: flex; gap: 8px; }
+
+.stage-card {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 14px;
+  margin-bottom: 10px;
+  background: var(--surface);
+}
+.stage-card h4 { margin: 0 0 6px; display: flex; gap: 10px; align-items: baseline; }
+.stage-card .stage-range { color: var(--accent-dark); font-weight: 700; font-size: 0.85rem; }
+.stage-card ul { margin: 6px 0; padding-left: 20px; }
+.stage-card .watch { margin-top: 8px; padding: 8px 10px; background: var(--warn-bg); border-radius: 6px; font-size: 0.88rem; color: var(--warn); }
+
+table.admin-table { width: 100%; border-collapse: collapse; }
+table.admin-table th, table.admin-table td { border: 1px solid var(--border); padding: 7px 9px; font-size: 0.88rem; text-align: left; vertical-align: top; }
+table.admin-table th { background: var(--accent-bg); }
+
+.student-card {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  margin-bottom: 10px;
+  padding: 12px 14px;
+  background: var(--surface);
+}
+.student-card-head { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; }
+.student-card-head strong { font-size: 1.05rem; }
+.student-card details { margin-top: 8px; }
+.student-card pre { font-family: var(--font-mono); background: var(--accent-bg); padding: 8px 10px; border-radius: 6px; white-space: pre-wrap; font-size: 0.85rem; }
+.student-card .meta-row { color: var(--text-muted); font-size: 0.85rem; }
+
+.pair-group { border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; margin-bottom: 10px; }
+.pair-group h4 { margin-top: 0; }
+
+.empty-note { color: var(--text-muted); font-style: italic; }

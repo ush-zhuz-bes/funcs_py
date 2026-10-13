@@ -374,6 +374,15 @@ main {
 
 .action-row { display: flex; flex-wrap: wrap; gap: 10px; }
 
+.submit-row { display: flex; align-items: center; gap: 10px; margin: 10px 0; flex-wrap: wrap; }
+.submit-status { font-size: 0.88rem; color: var(--ok); min-height: 1.2em; }
+.submit-status.status-error { color: var(--fail); }
+
+.pair-step { margin-bottom: 16px; padding-bottom: 14px; border-bottom: 1px dashed var(--border); }
+.pair-step:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+.pair-step h4 { margin-bottom: 8px; }
+.feedback-entry { border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; margin-top: 8px; background: #fbfcfd; }
+
 .grading-block { margin-bottom: 12px; }
 .grading-block ul { margin: 4px 0 0; padding-left: 20px; }
 

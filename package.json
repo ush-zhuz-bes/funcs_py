@@ -1,0 +1,16 @@
+{
+  "name": "function-lab",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Function Lab — Python-дағы функциялар сабағына арналған сайт (студенттік бет + оқытушының әкімші панелі)",
+  "main": "server/server.js",
+  "scripts": {
+    "start": "node server/server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}

@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="kk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Function Lab — Әкімші панелі</title>
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="admin.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="header-row">
+    <div class="brand">
+      <span class="brand-name">Function Lab</span>
+      <span class="brand-sub">Әкімші панелі — тек оқытушыға арналған</span>
+    </div>
+    <div id="adminBar" class="admin-bar" hidden>
+      <button type="button" class="btn btn-primary" id="btnRefresh">Жаңарту</button>
+      <button type="button" class="btn btn-ghost" id="btnLogout">Шығу</button>
+    </div>
+  </div>
+</header>
+
+<main id="main-content">
+
+  <section id="loginView" class="card" style="max-width:420px;margin:60px auto;">
+    <h2>Әкімші кірісі</h2>
+    <p class="hint">Бұл бет сабақ жоспарын, жауап кілтін және студенттердің жауаптарын көрсетеді. Кіру үшін әкімші паролін енгізіңіз.</p>
+    <form id="loginForm">
+      <label class="field-block">
+        <span>Пароль</span>
+        <input type="password" id="passwordInput" autocomplete="current-password" required>
+      </label>
+      <button type="submit" class="btn btn-primary">Кіру</button>
+      <p class="hint status-error" id="loginError" hidden></p>
+    </form>
+  </section>
+
+  <div id="dashboardView" hidden>
+
+    <section class="lesson-section" data-section="plan">
+      <div class="section-head">
+        <div class="section-head-left">
+          <span class="section-num">★</span>
+          <div>
+            <h2>Сабақ жоспары және айтылатын сөздер</h2>
+            <p class="section-meta">50 минуттық уақыт картасы — әр кезеңде нақты не айту, нені бақылау керектігімен</p>
+          </div>
+        </div>
+      </div>
+      <div id="stagesHost"></div>
+    </section>
+
+    <section class="lesson-section" data-section="answerkey">
+      <div class="section-head">
+        <div class="section-head-left">
+          <span class="section-num">★</span>
+          <div><h2>Жауап кілті</h2><p class="section-meta">Әр нұсқаның дұрыс нәтижелері — қайта есептеудің қажеті жоқ</p></div>
+        </div>
+      </div>
+      <div class="card"><div id="answerKeyHost"></div></div>
+    </section>
+
+    <section class="lesson-section" data-section="grading">
+      <div class="section-head">
+        <div class="section-head-left">
+          <span class="section-num">★</span>
+          <div><h2>Бағалау дескрипторлары</h2><p class="section-meta">Барлығы 100 балл — қорытынды бағаны оқытушы қояды</p></div>
+        </div>
+      </div>
+      <div class="card"><div id="gradingHost"></div></div>
+    </section>
+
+    <section class="lesson-section" data-section="students">
+      <div class="section-head">
+        <div class="section-head-left">
+          <span class="section-num">★</span>
+          <div><h2>Студенттер жіберген жауаптар</h2><p class="section-meta">Әр студент "Жіберу" батырмасын басқанда осы кестеге түседі</p></div>
+        </div>
+      </div>
+      <div class="card"><div id="studentsHost"></div></div>
+    </section>
+
+    <section class="lesson-section" data-section="pairs">
+      <div class="section-head">
+        <div class="section-head-left">
+          <span class="section-num">★</span>
+          <div><h2>Жұптық алмасу мониторы</h2><p class="section-meta">Кім кімге код жіберді және қандай пікір жазылды</p></div>
+        </div>
+      </div>
+      <div class="card"><div id="pairsHost"></div></div>
+    </section>
+
+  </div>
+
+</main>
+
+<footer class="site-footer no-print">
+  <p>Function Lab · Әкімші панелі · тек оқытушыға арналған — бұл сілтемені студенттермен бөліспеңіз</p>
+</footer>
+
+<script src="admin.js"></script>
+</body>
+</html>

@@ -107,6 +107,10 @@ print(total_1, total_2, total_3)</pre>
     </div>
   </div>
 
+  <div class="submit-row">
+    <button type="button" class="btn btn-primary" data-submit-section="start">Жауаптарды оқытушыға жіберу</button>
+    <span class="submit-status" data-submit-status="start"></span>
+  </div>
   <button type="button" class="btn btn-primary next-btn" data-next="understand">Келесі бөлімге өту →</button>
 </section>
 
@@ -187,6 +191,10 @@ print(total_1, total_2, total_3)</pre>
     <p class="formula">сома = price × quantity × (1 − discount / 100)</p>
   </div>
 
+  <div class="submit-row">
+    <button type="button" class="btn btn-primary" data-submit-section="understand">Жауаптарды оқытушыға жіберу</button>
+    <span class="submit-status" data-submit-status="understand"></span>
+  </div>
   <button type="button" class="btn btn-primary next-btn" data-next="predict">Келесі бөлімге өту →</button>
 </section>
 
@@ -267,6 +275,10 @@ print(total)</pre>
     </div>
   </div>
 
+  <div class="submit-row">
+    <button type="button" class="btn btn-primary" data-submit-section="predict">Жауаптарды оқытушыға жіберу</button>
+    <span class="submit-status" data-submit-status="predict"></span>
+  </div>
   <button type="button" class="btn btn-primary next-btn" data-next="variant">Келесі бөлімге өту →</button>
 </section>
 
@@ -311,6 +323,10 @@ print(total)</pre>
     </div>
   </div>
 
+  <div class="submit-row">
+    <button type="button" class="btn btn-primary" data-submit-section="variant">Жауаптарды оқытушыға жіберу</button>
+    <span class="submit-status" data-submit-status="variant"></span>
+  </div>
   <button type="button" class="btn btn-primary next-btn" data-next="check">Келесі бөлімге өту →</button>
 </section>
 
@@ -334,16 +350,24 @@ print(total)</pre>
 
   <div class="card">
     <h3>Ә. Жұптық тексеру</h3>
-    <p>Жұптар: 1–2; 3–4; 5–6; 7–8. 33–37 мин: 1, 3, 5, 7-нұсқа иелері кодын көрсетеді, 2, 4, 6, 8-нұсқа иелері тексереді. 37–41 мин: рөлдер ауысады. Серверлік байланыс қажет емес — серіктесіңіздің экранынан код пен нәтижені қарап, осы парақты толтырыңыз.</p>
+    <p>Жұптар: 1–2; 3–4; 5–6; 7–8. 33–37 мин: 1, 3, 5, 7-нұсқа иелері кодын жібереді, 2, 4, 6, 8-нұсқа иелері тексереді. 37–41 мин: рөлдер ауысады. Код серіктесіне сервер арқылы автоматты жіберіледі — екі компьютер те бір сайтты ашып тұруы жеткілікті.</p>
 
-    <form id="pairReviewForm" class="pair-form">
-      <div class="pair-form-grid">
-        <label class="field-block"><span>Код авторы</span><input type="text" name="author" required></label>
-        <label class="field-block"><span>Нұсқа</span>
-          <select name="variant" id="pairVariantSelect" required></select>
-        </label>
-        <label class="field-block"><span>Функция атауы</span><input type="text" name="funcName" readonly></label>
-        <label class="field-block"><span>Тексеруші</span><input type="text" name="reviewer" required></label>
+    <div class="pair-step">
+      <h4>1-қадам · Кодымды серіктеске жіберу</h4>
+      <button type="button" class="btn btn-primary" id="btnPairSend">Серіктеске кодымды жіберу</button>
+      <span class="hint" id="pairSendStatus"></span>
+    </div>
+
+    <div class="pair-step">
+      <h4>2-қадам · Серіктестің кодын қарап, тексеру парағын толтыру</h4>
+      <button type="button" class="btn" id="btnPairInbox">Серіктестің кодын қарау</button>
+      <div id="pairInboxBox" class="reveal-box" hidden>
+        <p class="hint" id="pairInboxMeta"></p>
+        <pre class="code-static" id="pairInboxCode"></pre>
+      </div>
+
+      <form id="pairReviewForm" class="pair-form" hidden>
+        <label class="field-block"><span>Тексеруші (сіздің атыңыз)</span><input type="text" name="reviewer" required></label>
         <label class="field-block"><span>Тексерілген жағдай</span>
           <select name="condition" required>
             <option value="Қалыпты деректер">Қалыпты деректер</option>
@@ -352,13 +376,18 @@ print(total)</pre>
             <option value="Еркін тексеру">Еркін тексеру</option>
           </select>
         </label>
-      </div>
-      <label class="field-block"><span>Байқалған нәтиже</span><textarea name="observed" rows="2" placeholder="мыс. Қалыпты деректерде нәтиже дұрыс. discount = 0 тестінде де жеңілдік шегеріліп тұр."></textarea></label>
-      <label class="field-block"><span>Қажетті түзету немесе сәйкестік туралы қорытынды</span><textarea name="conclusion" rows="2" placeholder="мыс. Формулада тұрақты 10 санының орнына discount параметрін қолдану қажет."></textarea></label>
-      <button type="submit" class="btn btn-primary">Жазба қосу</button>
-    </form>
+        <label class="field-block"><span>Байқалған нәтиже</span><textarea name="observed" rows="2" placeholder="мыс. Қалыпты деректерде нәтиже дұрыс. discount = 0 тестінде де жеңілдік шегеріліп тұр."></textarea></label>
+        <label class="field-block"><span>Қажетті түзету немесе сәйкестік туралы қорытынды</span><textarea name="conclusion" rows="2" placeholder="мыс. Формулада тұрақты 10 санының орнына discount параметрін қолдану қажет."></textarea></label>
+        <button type="submit" class="btn btn-primary">Пікірді жіберу</button>
+        <span class="hint" id="pairReviewStatus"></span>
+      </form>
+    </div>
 
-    <div id="pairReviewList" class="pair-review-list"></div>
+    <div class="pair-step">
+      <h4>3-қадам · Маған келген пікірлерді қарау</h4>
+      <button type="button" class="btn" id="btnPairFeedback">Маған келген пікірлерді көру</button>
+      <div id="pairFeedbackList"></div>
+    </div>
   </div>
 
   <div class="card">
@@ -369,6 +398,10 @@ print(total)</pre>
     <label class="field-block"><span>Оны қандай тестпен тексердім?</span><textarea id="defenseQ3" rows="2"></textarea></label>
   </div>
 
+  <div class="submit-row">
+    <button type="button" class="btn btn-primary" data-submit-section="check">Жауаптарды оқытушыға жіберу</button>
+    <span class="submit-status" data-submit-status="check"></span>
+  </div>
   <button type="button" class="btn btn-primary next-btn" data-next="summary">Келесі бөлімге өту →</button>
 </section>
 
@@ -421,10 +454,14 @@ print(total)</pre>
   </div>
 
   <div class="card no-print">
-    <h3>Жұмысты сақтау</h3>
-    <p class="hint">Жұмыс осы браузерде сақталады. Тапсыру үшін файлды жүктеп, оқытушы көрсеткен жерге жіберіңіз.</p>
+    <h3>Жұмысты сақтау және жіберу</h3>
+    <p class="hint">Жұмыс осы браузерде автоматты сақталады. Соңғы, толық жауабыңызды оқытушыға жіберу үшін төмендегі «Жауаптарды оқытушыға жіберу» батырмасын басыңыз — ол әкімші панеліне түседі. Өзіңізге көшірме ретінде файлды да жүктеп алуға болады.</p>
+    <div class="submit-row">
+      <button type="button" class="btn btn-primary" data-submit-section="summary">Жауаптарды оқытушыға жіберу</button>
+      <span class="submit-status" data-submit-status="summary"></span>
+    </div>
     <div class="action-row">
-      <button type="button" class="btn btn-primary" id="btnDownloadReport">Жұмысымды жүктеу</button>
+      <button type="button" class="btn" id="btnDownloadReport">Жұмысымды жүктеу (файл ретінде)</button>
       <button type="button" class="btn" id="btnPrintSheet">Жұмыс парағын басып шығару</button>
       <button type="button" class="btn btn-ghost" id="btnShowHomework">Үй тапсырмасын көру</button>
     </div>
