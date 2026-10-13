@@ -8,7 +8,10 @@
 const crypto = require("crypto");
 const { neon } = require("@neondatabase/serverless");
 
-const sql = neon(process.env.DATABASE_URL);
+const CONNECTION_STRING =
+  process.env.DATABASE_URL || process.env.POSTGRES_URL || process.env.POSTGRES_URL_NON_POOLING;
+
+const sql = neon(CONNECTION_STRING);
 
 let schemaReady = null;
 function ensureSchema() {

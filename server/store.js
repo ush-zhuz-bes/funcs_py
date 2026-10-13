@@ -1,7 +1,11 @@
 // Function Lab — дерекқор қабатын таңдау.
-// DATABASE_URL орнатылған болса (Vercel + Neon production), Postgres
-// қолданылады. Орнатылмаса (жергілікті тез тексеру), жергілікті JSON
-// файлға сақтайтын жеңіл нұсқа іске қосылады.
+// Neon-ды Vercel арқылы қосқанда интеграция DATABASE_URL-дан басқа
+// POSTGRES_URL / POSTGRES_URL_NON_POOLING атаулармен де орнатуы мүмкін —
+// қайсысы бар болса, соны қолданамыз. Ешқайсысы жоқ болса (жергілікті тез
+// тексеру), жергілікті JSON файлға сақтайтын жеңіл нұсқа іске қосылады.
 "use strict";
 
-module.exports = process.env.DATABASE_URL ? require("./store.pg") : require("./store.json");
+const CONNECTION_STRING =
+  process.env.DATABASE_URL || process.env.POSTGRES_URL || process.env.POSTGRES_URL_NON_POOLING;
+
+module.exports = CONNECTION_STRING ? require("./store.pg") : require("./store.json");
