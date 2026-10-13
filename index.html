@@ -1,0 +1,442 @@
+<!doctype html>
+<html lang="kk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Function Lab — Python-дағы функциялар</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<a href="#main-content" class="skip-link">Негізгі мазмұнға өту</a>
+
+<header class="site-header">
+  <div class="header-row">
+    <div class="brand">
+      <span class="brand-name">Function Lab</span>
+      <span class="brand-sub">Қайталанатын кодтан шағын қосымшаға</span>
+    </div>
+    <div class="header-fields">
+      <label class="field-inline">
+        <span>Аты-жөні / нөмірі</span>
+        <input id="studentName" type="text" placeholder="мыс. Айдар Е. немесе №5" autocomplete="off">
+      </label>
+      <label class="field-inline">
+        <span>Топ</span>
+        <input id="groupName" type="text" placeholder="топ атауын жазыңыз" autocomplete="off">
+      </label>
+    </div>
+  </div>
+  <div class="header-row header-row-status">
+    <div class="py-status" id="pyStatusBanner" role="status" aria-live="polite">Python ортасы жүктелуде…</div>
+    <div class="save-status" id="saveStatusBanner" aria-live="polite"></div>
+  </div>
+  <nav class="main-nav" aria-label="Сабақ бөлімдері" id="mainNav">
+    <button type="button" class="nav-btn" data-section="start">
+      <span class="nav-num">1</span><span class="nav-label">Бастау</span>
+    </button>
+    <button type="button" class="nav-btn" data-section="understand">
+      <span class="nav-num">2</span><span class="nav-label">Түсіну</span>
+    </button>
+    <button type="button" class="nav-btn" data-section="predict">
+      <span class="nav-num">3</span><span class="nav-label">Болжау</span>
+    </button>
+    <button type="button" class="nav-btn" data-section="variant">
+      <span class="nav-num">4</span><span class="nav-label">Менің нұсқам</span>
+    </button>
+    <button type="button" class="nav-btn" data-section="check">
+      <span class="nav-num">5</span><span class="nav-label">Тексеру</span>
+    </button>
+    <button type="button" class="nav-btn" data-section="summary">
+      <span class="nav-num">6</span><span class="nav-label">Қорытынды</span>
+    </button>
+  </nav>
+</header>
+
+<main id="main-content">
+
+<!-- ================= 1. БАСТАУ ================= -->
+<section id="section-start" class="lesson-section" data-section="start" aria-labelledby="h-start">
+  <div class="section-head">
+    <div class="section-head-left">
+      <span class="section-num">1</span>
+      <div>
+        <h2 id="h-start">Бастау</h2>
+        <p class="section-meta">Ұсынылған уақыт: ≈ 5 минут · Осы кезеңде: сабақтың мақсаты мен мәселесімен танысасыз</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Бүгінгі мақсат</h3>
+    <p>Бүгін біз шағын әзірлеушілер командасы ретінде жұмыс істейміз. Бір есептеуді қайта-қайта жазбай, оны функцияға айналдырамыз. Сабақ соңында әрқайсыңызда өз функцияңыз, үш тексеру мысалыңыз және нәтижені түсіндіретін қысқа жауабыңыз болады.</p>
+  </div>
+
+  <div class="card card-accent">
+    <h3>Сабақ соңында тапсырамын</h3>
+    <ul class="checklist">
+      <li>Python коды (өз нұсқама арналған функция)</li>
+      <li>Үш тест нәтижесі</li>
+      <li>Қысқаша түсіндіру (функция қалай жұмыс істейтіні туралы)</li>
+      <li>Серіктесіме берген кері байланыс</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>Проблемалық жағдаят</h3>
+    <p>Сервисте үш тапсырыстың құны есептеледі. Баға мен сан әртүрлі, бірақ есептеу әрекеті бірдей.</p>
+    <pre class="code-static">total_1 = 1500 * 2
+total_2 = 2000 * 3
+total_3 = 1200 * 4
+print(total_1, total_2, total_3)</pre>
+
+    <h4>Талқылау сұрақтары</h4>
+    <ol class="numbered-questions">
+      <li>Барлық есептеуде қандай әрекет қайталанып тұр?</li>
+      <li>Әр есептеуге 10% жеңілдік енгізу керек болса, неше жолды өзгертеміз?</li>
+      <li>Есептеу ережесін бір рет жазып, әртүрлі деректермен қолдануға бола ма?</li>
+    </ol>
+
+    <label class="field-block">
+      <span>Өз ойымды жазамын</span>
+      <textarea id="discussionAnswer" rows="3" placeholder="Осында өз жауабыңызды жазыңыз…"></textarea>
+    </label>
+
+    <button type="button" class="btn" id="btnRevealDiscussion">Түсіндірмені ашу</button>
+    <div class="reveal-box" id="discussionExplanation" hidden>
+      <p>Әр жолда бірлік бағасы мен саны көбейтіледі — бұл есептеу ережесі үш жерде де қайталанып жазылған. Ереже бірдей болса да, оны әр жолда қайта теру қатені көбейтеді: мысалы, жеңілдік қосу үшін үш жолды да өзгерту керек болар еді. Ортақ әрекетті бір рет жазып, оны әр түрлі деректермен (price, quantity) қайта-қайта шақыруға болады — дәл осыны функция істейді.</p>
+    </div>
+  </div>
+
+  <button type="button" class="btn btn-primary next-btn" data-next="understand">Келесі бөлімге өту →</button>
+</section>
+
+<!-- ================= 2. ТҮСІНУ ================= -->
+<section id="section-understand" class="lesson-section" data-section="understand" aria-labelledby="h-understand">
+  <div class="section-head">
+    <div class="section-head-left">
+      <span class="section-num">2</span>
+      <div>
+        <h2 id="h-understand">Түсіну</h2>
+        <p class="section-meta">Ұсынылған уақыт: ≈ 8 минут · Осы кезеңде: функция теориясын оқып, мысалды орындайсыз</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Функция не үшін қажет?</h3>
+    <p>Алдыңғы бөлімдегі мысалда бірдей әрекет (бағаны санға көбейту) үш рет қайталанды. <strong>Функция</strong> — шақырылғанда белгілі бір әрекетті орындайтын код бөлігі. Ережені бір рет жазып, оны әртүрлі деректермен қайта-қайта қолдануға мүмкіндік береді.</p>
+  </div>
+
+  <div class="card">
+    <h3>Функция қалай анықталады? Параметр мен аргумент деген не?</h3>
+    <p><code>def</code> сөзі функцияны анықтайды. Жақшаның ішінде жазылған атаулар — <strong>параметрлер</strong>. Параметр функцияны анықтағанда жазылады. <strong>Аргумент</strong> функцияны шақырғанда беріледі.</p>
+    <p>Функцияны анықтау оның денесін бірден орындау емес. Төмендегі мысалда функция денесі тек функция шақырылғанда орындалады.</p>
+  </div>
+
+  <div class="card">
+    <h3>Функция қалай шақырылады? <code>return</code> не істейді? <code>print()</code> пен <code>return</code> несімен ерекшеленеді?</h3>
+    <p>Функция атауын жазып, жақшаның ішіне керек аргументтерді беру арқылы шақырылады. <code>return</code> есептелген мәнді функция шақырылған орынға қайтарады — осы мәнді айнымалыға сақтап, кейін қолдануға болады. <code>print()</code> тек экранға шығарады, ал мән ешқайда сақталмайды.</p>
+  </div>
+
+  <div class="theory-grid">
+    <div class="editor" data-slot="theory-main" data-filename="mysal.py">
+      <div class="editor-toolbar">
+        <button type="button" class="btn btn-primary" data-action="run">Орындау</button>
+        <button type="button" class="btn" data-action="stop">Тоқтату</button>
+        <button type="button" class="btn btn-ghost" data-action="reset">Бастапқы үлгі</button>
+        <button type="button" class="btn btn-ghost" data-action="copy">Көшіру</button>
+        <button type="button" class="btn btn-ghost" data-action="download">.py жүктеу</button>
+      </div>
+      <textarea class="editor-textarea" spellcheck="false" autocapitalize="off" autocomplete="off" rows="8"></textarea>
+      <div class="editor-status" data-role="status">Python ортасы жүктелуде…</div>
+      <pre class="editor-output" data-role="output" aria-live="polite"></pre>
+    </div>
+
+    <div class="line-explain">
+      <h4>Жолдар бойынша түсіндірме</h4>
+      <dl>
+        <dt>1-жол — <code>def calculate_total(price, quantity):</code></dt>
+        <dd><code>def</code> функцияны анықтайды. <code>calculate_total</code> — функция атауы. <code>price</code> және <code>quantity</code> — параметрлер. Соңында қос нүкте қойылады.</dd>
+        <dt>2-жол — <code>amount = price * quantity</code></dt>
+        <dd>Функция денесінде баға мен саны көбейтіліп, <code>amount</code> айнымалысына жазылады. Шегініс осы жолдың функцияға тиесілі екенін көрсетеді.</dd>
+        <dt>3-жол — <code>return amount</code></dt>
+        <dd><code>return</code> есептелген <code>amount</code> мәнін қайтарады.</dd>
+        <dt>5-жол — <code>subtotal = calculate_total(1500, 2)</code></dt>
+        <dd>Функция 1500 және 2 аргументтерімен шақырылады. Қайтарылған 3000 мәні <code>subtotal</code> айнымалысына сақталады.</dd>
+        <dt>6-жол — <code>total = subtotal + 200</code></dt>
+        <dd>Қайтарылған нәтижеге функцияның сыртында 200 қосылады.</dd>
+        <dt>7-жол — <code>print(total)</code></dt>
+        <dd><code>print(total)</code> соңғы 3200 нәтижесін экранға шығарады.</dd>
+      </dl>
+    </div>
+  </div>
+
+  <div class="card">
+    <h4>Шағын әрекет</h4>
+    <p>Аргументтерді 1000 және 4 деп өзгертіңіз. Соңғы нәтиже қандай болады? Алдымен болжаңыз, кейін тексеріңіз.</p>
+    <label class="field-block field-inline-row">
+      <span>Менің болжамым</span>
+      <input type="text" id="theoryGuess" placeholder="мыс. 4200">
+    </label>
+    <p class="hint" id="theoryGuessFeedback"></p>
+  </div>
+
+  <div class="card">
+    <h3>Жеке жұмысқа өту</h3>
+    <p>Жеке жұмыста <code>price</code> пен <code>quantity</code> параметрлеріне <code>discount</code> параметрін қосамыз. Ол жеңілдік пайызын білдіреді.</p>
+    <p class="formula">сома = price × quantity × (1 − discount / 100)</p>
+  </div>
+
+  <button type="button" class="btn btn-primary next-btn" data-next="predict">Келесі бөлімге өту →</button>
+</section>
+
+<!-- ================= 3. БОЛЖАУ ================= -->
+<section id="section-predict" class="lesson-section" data-section="predict" aria-labelledby="h-predict">
+  <div class="section-head">
+    <div class="section-head-left">
+      <span class="section-num">3</span>
+      <div>
+        <h2 id="h-predict">Болжау</h2>
+        <p class="section-meta">Ұсынылған уақыт: ≈ 5 минут · Осы кезеңде: нәтижені алдын ала болжап, содан соң тексересіз</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card card-warn">
+    <h3>Орындамай тұрып болжа</h3>
+    <p>Алдымен екі сұраққа жауап жазыңыз, содан кейін ғана кодты орындау және түсіндірмені ашу батырмалары белсенді болады.</p>
+    <div class="predict-fields">
+      <label class="field-block">
+        <span>Экранға қандай нәтижелер шығады?</span>
+        <input type="text" id="predictQ1" placeholder="болжамыңызды жазыңыз">
+      </label>
+      <label class="field-block">
+        <span>result айнымалысында қандай мән сақталады?</span>
+        <input type="text" id="predictQ2" placeholder="болжамыңызды жазыңыз">
+      </label>
+    </div>
+
+    <div class="editor" data-slot="predict-main" data-filename="boljau.py">
+      <div class="editor-toolbar">
+        <button type="button" class="btn btn-primary" data-action="run" disabled>Кодты орындау</button>
+        <button type="button" class="btn" data-action="stop">Тоқтату</button>
+        <button type="button" class="btn btn-ghost" data-action="copy">Көшіру</button>
+        <button type="button" class="btn btn-ghost" data-action="download">.py жүктеу</button>
+      </div>
+      <textarea class="editor-textarea" spellcheck="false" autocapitalize="off" autocomplete="off" rows="6"></textarea>
+      <div class="editor-status" data-role="status">Алдымен екі болжамды толтырыңыз</div>
+      <pre class="editor-output" data-role="output" aria-live="polite"></pre>
+    </div>
+
+    <button type="button" class="btn" id="btnRevealPredictExplain" disabled>Түсіндірмені ашу</button>
+    <div class="reveal-box" id="predictExplainBox" hidden>
+      <p>Экранда:</p>
+      <pre class="code-static">3000
+None</pre>
+      <p>3000 мәнін функция ішіндегі <code>print()</code> шығарады. Есептелген санды қайтаратын <code>return</code> болмағандықтан, бұл функцияның нәтижесі <code>None</code> болады және <code>result</code> айнымалысына <code>None</code> сақталады.</p>
+      <p><strong>Экранда санның көрінуі оның функциядан қайтарылғанын білдірмейді. <code>print()</code> көрсетеді, ал <code>return</code> нәтижені кейін қолдану үшін қайтарады.</strong></p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Түзету тапсырмасы</h3>
+    <p>Функция есептелген санды қайтарсын. Оны айнымалыға сақтап, функцияның сыртында 200 қосыңыз. Бастапқы кодты өзіңіз түзетіп, орындап көріңіз.</p>
+
+    <div class="editor" data-slot="predict-fix" data-filename="boljau_tuzetu.py">
+      <div class="editor-toolbar">
+        <button type="button" class="btn btn-primary" data-action="run">Орындау</button>
+        <button type="button" class="btn" data-action="stop">Тоқтату</button>
+        <button type="button" class="btn btn-ghost" data-action="reset">Бастапқы үлгі</button>
+        <button type="button" class="btn btn-ghost" data-action="copy">Көшіру</button>
+        <button type="button" class="btn btn-ghost" data-action="download">.py жүктеу</button>
+      </div>
+      <textarea class="editor-textarea" spellcheck="false" autocapitalize="off" autocomplete="off" rows="6"></textarea>
+      <div class="editor-status" data-role="status">Python ортасы жүктелуде…</div>
+      <pre class="editor-output" data-role="output" aria-live="polite"></pre>
+    </div>
+
+    <button type="button" class="btn" id="btnRevealFixed" disabled>Дайын түзетуді ашу</button>
+    <div class="reveal-box" id="fixedExplainBox" hidden>
+      <pre class="code-static">def calculate_total(price, quantity):
+    return price * quantity
+
+result = calculate_total(1500, 2)
+total = result + 200
+print(total)</pre>
+      <p>Нәтиже: 3200.</p>
+    </div>
+  </div>
+
+  <button type="button" class="btn btn-primary next-btn" data-next="variant">Келесі бөлімге өту →</button>
+</section>
+
+<!-- ================= 4. МЕНІҢ НҰСҚАМ ================= -->
+<section id="section-variant" class="lesson-section" data-section="variant" aria-labelledby="h-variant">
+  <div class="section-head">
+    <div class="section-head-left">
+      <span class="section-num">4</span>
+      <div>
+        <h2 id="h-variant">Менің нұсқам</h2>
+        <p class="section-meta">Ұсынылған уақыт: ≈ 15 минут · Осы кезеңде: оқытушы белгілеген нұсқада жеке функция жазасыз</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <label class="field-block field-inline-row">
+      <span>Нұсқамды таңдаймын</span>
+      <select id="variantSelect"></select>
+    </label>
+    <div id="variantDetailCard" class="variant-detail"></div>
+  </div>
+
+  <div class="card">
+    <h3>Ортақ тапсырма</h3>
+    <p>Өз нұсқаңызда берілген атаумен үш параметрлі функция құрыңыз:</p>
+    <ul class="checklist">
+      <li><code>price</code> — бірлік бағасы;</li>
+      <li><code>quantity</code> — саны немесе мерзімі;</li>
+      <li><code>discount</code> — жеңілдік пайызы.</li>
+    </ul>
+    <p>Жеңілдіктен кейінгі соманы есептеп, <code>return</code> арқылы қайтарыңыз. Функцияны шақырып, нәтижені айнымалыға сақтаңыз. Функцияның сыртында сол нәтижеге <code>fee</code> қызмет ақысын қосыңыз. Сома мен соңғы төлемді бөлек шығарыңыз.</p>
+    <p class="formula">сома = price × quantity × (1 − discount / 100)<br>соңғы төлем = функция қайтарған сома + fee</p>
+  </div>
+
+  <div id="variantEditorHost" class="card"></div>
+
+  <div class="card">
+    <button type="button" class="btn" id="btnToggleGuiding">Бағыттаушы сұрақ</button>
+    <div class="reveal-box" id="guidingQuestionsBox" hidden>
+      <ol class="numbered-questions" id="guidingQuestionsList"></ol>
+    </div>
+  </div>
+
+  <button type="button" class="btn btn-primary next-btn" data-next="check">Келесі бөлімге өту →</button>
+</section>
+
+<!-- ================= 5. ТЕКСЕРУ ================= -->
+<section id="section-check" class="lesson-section" data-section="check" aria-labelledby="h-check">
+  <div class="section-head">
+    <div class="section-head-left">
+      <span class="section-num">5</span>
+      <div>
+        <h2 id="h-check">Тексеру</h2>
+        <p class="section-meta">Ұсынылған уақыт: ≈ 13 минут · Осы кезеңде: автотест, жұптық тексеру және шағын қорғауға дайындық</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>А. Үш тест</h3>
+    <p id="checkActiveVariantLine" class="hint"></p>
+    <div id="testTableHost"></div>
+  </div>
+
+  <div class="card">
+    <h3>Ә. Жұптық тексеру</h3>
+    <p>Жұптар: 1–2; 3–4; 5–6; 7–8. 33–37 мин: 1, 3, 5, 7-нұсқа иелері кодын көрсетеді, 2, 4, 6, 8-нұсқа иелері тексереді. 37–41 мин: рөлдер ауысады. Серверлік байланыс қажет емес — серіктесіңіздің экранынан код пен нәтижені қарап, осы парақты толтырыңыз.</p>
+
+    <form id="pairReviewForm" class="pair-form">
+      <div class="pair-form-grid">
+        <label class="field-block"><span>Код авторы</span><input type="text" name="author" required></label>
+        <label class="field-block"><span>Нұсқа</span>
+          <select name="variant" id="pairVariantSelect" required></select>
+        </label>
+        <label class="field-block"><span>Функция атауы</span><input type="text" name="funcName" readonly></label>
+        <label class="field-block"><span>Тексеруші</span><input type="text" name="reviewer" required></label>
+        <label class="field-block"><span>Тексерілген жағдай</span>
+          <select name="condition" required>
+            <option value="Қалыпты деректер">Қалыпты деректер</option>
+            <option value="quantity = 0">quantity = 0</option>
+            <option value="discount = 0">discount = 0</option>
+            <option value="Еркін тексеру">Еркін тексеру</option>
+          </select>
+        </label>
+      </div>
+      <label class="field-block"><span>Байқалған нәтиже</span><textarea name="observed" rows="2" placeholder="мыс. Қалыпты деректерде нәтиже дұрыс. discount = 0 тестінде де жеңілдік шегеріліп тұр."></textarea></label>
+      <label class="field-block"><span>Қажетті түзету немесе сәйкестік туралы қорытынды</span><textarea name="conclusion" rows="2" placeholder="мыс. Формулада тұрақты 10 санының орнына discount параметрін қолдану қажет."></textarea></label>
+      <button type="submit" class="btn btn-primary">Жазба қосу</button>
+    </form>
+
+    <div id="pairReviewList" class="pair-review-list"></div>
+  </div>
+
+  <div class="card">
+    <h3>Б. Шағын қорғау</h3>
+    <p>Жауапқа 30 секунд беріледі. Әр сұраққа қысқа жауап жазыңыз — дайын жауап автоматты түрде толтырылмайды.</p>
+    <label class="field-block"><span>Функциям қандай параметрлерді қабылдайды?</span><textarea id="defenseQ1" rows="2"></textarea></label>
+    <label class="field-block"><span>Функциям қандай нәтиже қайтарады?</span><textarea id="defenseQ2" rows="2"></textarea></label>
+    <label class="field-block"><span>Оны қандай тестпен тексердім?</span><textarea id="defenseQ3" rows="2"></textarea></label>
+  </div>
+
+  <button type="button" class="btn btn-primary next-btn" data-next="summary">Келесі бөлімге өту →</button>
+</section>
+
+<!-- ================= 6. ҚОРЫТЫНДЫ ================= -->
+<section id="section-summary" class="lesson-section" data-section="summary" aria-labelledby="h-summary">
+  <div class="section-head">
+    <div class="section-head-left">
+      <span class="section-num">6</span>
+      <div>
+        <h2 id="h-summary">Қорытынды</h2>
+        <p class="section-meta">Ұсынылған уақыт: ≈ 4 минут · Осы кезеңде: рефлексия, үй тапсырмасы және жұмысты сақтау</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Қорытынды сұрақтар</h3>
+    <label class="field-block"><span>1. Функцияны анықтау мен оны шақырудың айырмасын бір сөйлеммен түсіндіріңіз</span><textarea id="finalQ1" rows="2"></textarea></label>
+    <label class="field-block"><span>2. Функция есептеген мәнді айнымалыға сақтап, кейін қолдану үшін функция ішінде қандай оператор қажет? Неліктен print() жеткіліксіз?</span><textarea id="finalQ2" rows="2"></textarea></label>
+  </div>
+
+  <div class="card">
+    <h3>Рефлексия</h3>
+    <label class="field-block field-sentence"><span>Бүгін мен</span><input type="text" id="reflectionStem1"><span>орындай алдым.</span></label>
+    <label class="field-block field-sentence"><span>Келесі жолы</span><input type="text" id="reflectionStem2"><span>жақсартамын.</span></label>
+  </div>
+
+  <div class="card">
+    <button type="button" class="btn" id="btnToggleGrading">Бағалау өлшемдері</button>
+    <div class="reveal-box" id="gradingBox" hidden>
+      <p class="hint">Қорытынды бағаны оқытушы қояды. Барлығы 100 балл, бес өлшемнің әрқайсысы 20 балдан.</p>
+      <div id="gradingTableHost"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <button type="button" class="btn" id="btnToggleHomework">Үй тапсырмасын көру</button>
+    <div class="reveal-box" id="homeworkBox" hidden>
+      <h3>Үй тапсырмасы</h3>
+      <p>Өз нұсқаңыздағы программаны жалғастырыңыз. <code>add_service_fee(amount, fee)</code> атты екі параметрлі функция құрыңыз. Ол негізгі функциядан алынған сомаға қызмет ақысын қосып, нәтижені қайтарсын.</p>
+      <p>Екі функцияны бір программада байланыстырып қолданыңыз.</p>
+      <h4>Тапсыру нәтижесі</h4>
+      <ul class="checklist">
+        <li>екі функциясы бар .py файл;</li>
+        <li>қалыпты төлем, fee = 0 және amount = 0 жағдайларына арналған үш тест;</li>
+        <li>функциялардың байланысын түсіндіретін 2–3 сөйлем.</li>
+      </ul>
+      <p><strong>Мерзімі:</strong> келесі практикалық сабақ.</p>
+    </div>
+  </div>
+
+  <div class="card no-print">
+    <h3>Жұмысты сақтау</h3>
+    <p class="hint">Жұмыс осы браузерде сақталады. Тапсыру үшін файлды жүктеп, оқытушы көрсеткен жерге жіберіңіз.</p>
+    <div class="action-row">
+      <button type="button" class="btn btn-primary" id="btnDownloadReport">Жұмысымды жүктеу</button>
+      <button type="button" class="btn" id="btnPrintSheet">Жұмыс парағын басып шығару</button>
+      <button type="button" class="btn btn-ghost" id="btnShowHomework">Үй тапсырмасын көру</button>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="site-footer no-print">
+  <p>Function Lab · Қ. Жұбанов атындағы Ақтөбе өңірлік университеті · Python-дағы функциялар · 6B06103</p>
+</footer>
+
+<script type="module" src="js/app.js"></script>
+</body>
+</html>
