@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Жиындар мен сөздіктер — Python-да қосымшалар құру</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container">
+    <p class="university">Қ. Жұбанов атындағы Ақтөбе өңірлік университеті</p>
+    <h1>Python-да қосымшалар құру</h1>
+    <p class="lesson-topic">Тақырып: <strong>Жиындар мен сөздіктер</strong></p>
+
+    <dl class="meta-grid">
+      <div><dt>Білім беру бағдарламасы</dt><dd>6B06103 — Есептеу техникасы және программалық қамтамасыз ету</dd></div>
+      <div><dt>Курс / семестр / апта</dt><dd>3-курс, 5-семестр, 7-апта</dd></div>
+      <div><dt>Күні</dt><dd>21.10.2026</dd></div>
+      <div><dt>Студент саны</dt><dd>8</dd></div>
+      <div><dt>Топ</dt><dd class="editable">__________________</dd></div>
+      <div><dt>Кабинет</dt><dd class="editable">__________________</dd></div>
+      <div><dt>Оқытушы</dt><dd>Практикант Елеуберген Ж.А.</dd></div>
+      <div><dt>Практика жетекшісі</dt><dd>Байбактина А.Т.</dd></div>
+      <div><dt>Сабақ түрі</dt><dd>Практикалық және зертханалық (кәдімгі оқу сабағы)</dd></div>
+      <div><dt>Жоспарлы ұзақтық</dt><dd>Практика — 50 минут, зертхана — 50 минут <span class="hint-small">(қажет болса осы санды мәтінде өзгертіңіз)</span></dd></div>
+    </dl>
+
+    <nav class="main-tabs" role="tablist" aria-label="Сабақ режимі">
+      <button class="tab-btn active" data-tab="practice" role="tab" aria-selected="true">Практикалық сабақ</button>
+      <button class="tab-btn" data-tab="lab" role="tab" aria-selected="false">Зертханалық сабақ</button>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+
+  <!-- ===================== ПРАКТИКАЛЫҚ САБАҚ ===================== -->
+  <section id="practice" class="tab-panel active">
+
+    <nav class="sub-tabs" aria-label="Практикалық сабақ бөлімдері">
+      <button class="sub-btn active" data-sub="repeat">1. Қайталау</button>
+      <button class="sub-btn" data-sub="sets">2. Жиындар</button>
+      <button class="sub-btn" data-sub="dicts">3. Сөздіктер</button>
+      <button class="sub-btn" data-sub="tasks">4. Практикалық тапсырмалар</button>
+    </nav>
+
+    <!-- 1. ҚАЙТАЛАУ -->
+    <div id="repeat" class="sub-panel active">
+      <h2>1. Қайталау <span class="time-badge">0–13 минут</span></h2>
+      <p>Бұрын өткен материалды еске түсірейік: <strong>жиын (set)</strong> және <strong>сөздік (dict)</strong> деген не, олар бір-бірінен немен ерекшеленеді. Бұл бөлім шамамен 10–13 минутқа есептелген.</p>
+
+      <div class="quiz-list">
+        <div class="quiz-item">
+          <p class="quiz-question"><strong>1-сұрақ.</strong> Жиын (set) дегеніміз не?</p>
+          <button class="reveal-btn" data-target="q1">Тексеру</button>
+          <div class="quiz-answer" id="q1" hidden>
+            <p>Жиын — қайталанбайтын, реттелмеген элементтерден тұратын жиынтық. Python-да <code>set()</code> функциясымен немесе ішінде кемінде бір элементі бар <code>{}</code> фигуралық жақшамен жасалады.</p>
+          </div>
+        </div>
+
+        <div class="quiz-item">
+          <p class="quiz-question"><strong>2-сұрақ.</strong> Set қайталанатын элементтерді қалай өңдейді?</p>
+          <button class="reveal-btn" data-target="q2">Тексеру</button>
+          <div class="quiz-answer" id="q2" hidden>
+            <p>Жиынға қайталанатын мән қанша рет қосылса да, ол тек бір рет сақталады. Мысалы, <code>set([1, 2, 2, 3])</code> нәтижесінде <code>{1, 2, 3}</code> шығады — себебі жиынның негізгі қасиеті: әр элемент бірегей.</p>
+          </div>
+        </div>
+
+        <div class="quiz-item">
+          <p class="quiz-question"><strong>3-сұрақ.</strong> <code>set()</code> пен <code>{}</code> арасында қандай айырма бар?</p>
+          <button class="reveal-btn" data-target="q3">Тексеру</button>
+          <div class="quiz-answer" id="q3" hidden>
+            <p><code>{}</code> — бос сөздік (dict) жасайды, бос жиын емес! Ал бос жиынды тек <code>set()</code> арқылы ғана жасауға болады. Егер ішінде элемент болса (мысалы, <code>{1, 2, 3}</code>), бұл жиын (set) болады.</p>
+          </div>
+        </div>
+
+        <div class="quiz-item">
+          <p class="quiz-question"><strong>4-сұрақ.</strong> Сөздікте кілт (key) пен мән (value) деген не?</p>
+          <button class="reveal-btn" data-target="q4">Тексеру</button>
+          <div class="quiz-answer" id="q4" hidden>
+            <p>Сөздік — <code>кілт: мән</code> жұптарынан тұратын құрылым. Кілт арқылы тиісті мәнге жылдам қол жеткізуге болады. Мысалы, <code>{'name': 'Asan'}</code> жазбасында <code>'name'</code> — кілт, <code>'Asan'</code> — осы кілтке сәйкес мән.</p>
+          </div>
+        </div>
+
+        <div class="quiz-item">
+          <p class="quiz-question"><strong>5-сұрақ.</strong> <code>dict.get()</code> пен <code>dict[key]</code> арасында қандай айырма бар?</p>
+          <button class="reveal-btn" data-target="q5">Тексеру</button>
+          <div class="quiz-answer" id="q5" hidden>
+            <p><code>dict[key]</code> — егер мұндай кілт сөздікте болмаса, <code>KeyError</code> қатесін тудырады. <code>dict.get(key, әдепкі_мән)</code> — кілт болмаса, бағдарлама тоқтамайды, орнына көрсетілген әдепкі мәнді (немесе кілт берілмесе <code>None</code>) қайтарады.</p>
+          </div>
+        </div>
+      </div>
+
+      <h3>Негізгі код</h3>
+      <div class="code-block">
+        <div class="code-block-header">
+          <span>Python</span>
+          <button class="copy-btn" data-copy-target="code-repeat-1">Көшіріп алу</button>
+        </div>
+        <pre><code id="code-repeat-1">values = [1, 2, 3, 1, 2]
+numbers = set(values)
+print(sorted(numbers))
+
+empty_set = set()
+empty_dict = {}
+print(type(empty_set), type(empty_dict))</code></pre>
+        <div class="code-explain">
+          <p><strong>Жолма-жол түсіндірме:</strong></p>
+          <ul>
+            <li><code>values = [1, 2, 3, 1, 2]</code> — қайталанатын сандары бар тізім жасалды.</li>
+            <li><code>numbers = set(values)</code> — тізімнен жиын жасалады, қайталанған 1 мен 2 бір-бірден ғана қалады.</li>
+            <li><code>print(sorted(numbers))</code> — жиын элементтерінің реті тұрақты болмағандықтан, <code>sorted()</code> арқылы өсу ретімен тізім ретінде шығарамыз.</li>
+            <li><code>empty_set = set()</code> — бос жиын жасалды.</li>
+            <li><code>empty_dict = {}</code> — бос сөздік жасалды (назар аударыңыз: <code>{}</code> жиын емес!).</li>
+            <li><code>print(type(empty_set), type(empty_dict))</code> — екі айнымалының нақты түрін (типін) шығарады.</li>
+          </ul>
+        </div>
+        <div class="expected-output">
+          <strong>Күтілетін нәтиже:</strong>
+          <pre>[1, 2, 3]
+&lt;class 'set'&gt; &lt;class 'dict'&gt;</pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. ЖИЫНДАР -->
+    <div id="sets" class="sub-panel">
+      <h2>2. Жиындар <span class="time-badge">13–24 минут</span></h2>
+      <p class="source-note">Дереккөз: №8 дәріс «Жиындар», оқу-әдістемелік кешен, 67–74-беттер.</p>
+
+      <h3>Негізгі ұғымдар мен операциялар</h3>
+      <ul class="theory-list">
+        <li><code>set()</code> немесе <code>{}</code> (бос емес) — жиын жасау</li>
+        <li><code>len(a)</code> — жиындағы элементтер саны</li>
+        <li><code>x in a</code> — элементтің жиында бар-жоғын тексеру</li>
+        <li><code>a | b</code> немесе <code>a.union(b)</code> — бірігу (union)</li>
+        <li><code>a &amp; b</code> немесе <code>a.intersection(b)</code> — қиылысу (intersection)</li>
+        <li><code>a - b</code> немесе <code>a.difference(b)</code> — айырым (difference)</li>
+        <li><code>a ^ b</code> немесе <code>a.symmetric_difference(b)</code> — симметриялық айырым</li>
+        <li><code>a.add(x)</code> — жиынға элемент қосу</li>
+        <li><code>a.remove(x)</code> — элементті жою (жоқ болса <code>KeyError</code>)</li>
+        <li><code>a.discard(x)</code> — элементті жою (жоқ болса қате болмайды)</li>
+      </ul>
+
+      <p class="note-box"><strong>Ескерту:</strong> жиынды <code>print()</code> арқылы шығарғанда элементтердің реті тұрақты емес (Python бұған кепілдік бермейді). Сондықтан бұл сабақта нәтижелерді салыстырғанда әрқашан <code>sorted()</code> функциясын қолданамыз.</p>
+
+      <p><code>frozenset</code> — өзгермейтін (immutable) жиын. Әдеттегі жиынмен бірдей операцияларды (<code>|</code>, <code>&amp;</code>, <code>-</code>, <code>^</code>) қолдауға болады, бірақ оған <code>add()</code> немесе <code>remove()</code> арқылы өзгеріс енгізу мүмкін емес. Сондықтан оны, мысалы, сөздіктің кілті ретінде немесе басқа жиынның ішіндегі элемент ретінде қолдануға болады.</p>
+
+      <h3>Негізгі мысал</h3>
+      <div class="code-block">
+        <div class="code-block-header">
+          <span>Python</span>
+          <button class="copy-btn" data-copy-target="code-sets-1">Көшіріп алу</button>
+        </div>
+        <pre><code id="code-sets-1">a = {1, 2, 3, 4, 5}
+b = {4, 5, 6, 7, 8}
+print('Бірігуі:', sorted(a | b))
+print('Қиылысуы:', sorted(a & b))
+print('Айырымы:', sorted(a - b))
+print('Симметриялық айырым:', sorted(a ^ b))</code></pre>
+        <div class="code-explain">
+          <p><strong>Жолма-жол түсіндірме:</strong></p>
+          <ul>
+            <li><code>a = {1, 2, 3, 4, 5}</code> және <code>b = {4, 5, 6, 7, 8}</code> — екі жиын жасалды.</li>
+            <li><code>a | b</code> — екі жиынның барлық (қайталанбайтын) элементтерін біріктіреді.</li>
+            <li><code>a &amp; b</code> — тек екі жиында да бар ортақ элементтерді алады.</li>
+            <li><code>a - b</code> — тек <code>a</code>-да бар, бірақ <code>b</code>-де жоқ элементтер.</li>
+            <li><code>a ^ b</code> — екі жиынның біреуінде ғана кездесетін элементтер (ортақтары алынып тасталады).</li>
+          </ul>
+        </div>
+        <div class="expected-output">
+          <strong>Күтілетін нәтиже:</strong>
+          <pre>Бірігуі: [1, 2, 3, 4, 5, 6, 7, 8]
+Қиылысуы: [4, 5]
+Айырымы: [1, 2, 3]
+Симметриялық айырым: [1, 2, 3, 6, 7, 8]</pre>
+        </div>
+      </div>
+
+      <h3>Қосымша мысал: add() және discard()</h3>
+      <div class="code-block">
+        <div class="code-block-header">
+          <span>Python</span>
+          <button class="copy-btn" data-copy-target="code-sets-2">Көшіріп алу</button>
+        </div>
+        <pre><code id="code-sets-2">numbers = {1, 2, 3, 4, 5, 6}
+numbers.discard(3)
+numbers.add(8)
+print(sorted(numbers))</code></pre>
+        <div class="code-explain">
+          <p><strong>Жолма-жол түсіндірме:</strong></p>
+          <ul>
+            <li><code>numbers.discard(3)</code> — жиыннан 3 санын жояды.</li>
+            <li><code>numbers.add(8)</code> — жиынға 8 санын қосады.</li>
+            <li><code>print(sorted(numbers))</code> — нәтижені өсу ретімен шығарады.</li>
+          </ul>
+        </div>
+        <div class="expected-output">
+          <strong>Күтілетін нәтиже:</strong>
+          <pre>[1, 2, 4, 5, 6, 8]</pre>
+        </div>
+      </div>
+
+      <p class="note-box"><strong>Маңызды айырма:</strong> егер <code>remove()</code> жиында жоқ элементті өшіруге тырысса, Python <code>KeyError</code> қатесін тудырады да, бағдарлама тоқтайды. Ал <code>discard()</code> дәл сол жағдайда ешқандай қате бермейді — жиында элемент болмаса, жай ештеңе істемейді.</p>
+    </div>
+
+    <!-- 3. СӨЗДІКТЕР -->
+    <div id="dicts" class="sub-panel">
+      <h2>3. Сөздіктер <span class="time-badge">24–36 минут</span></h2>
+      <p class="source-note">Дереккөз: №9 дәріс «Сөздіктер түсінігі және құру принциптері», оқу-әдістемелік кешен, 74–80-беттер.</p>
+
+      <h3>Негізгі ұғымдар мен операциялар</h3>
+      <ul class="theory-list">
+        <li><code>{key: value}</code> — сөздік жазылымы</li>
+        <li><code>d[key]</code> — кілт бойынша мәнге қатынау</li>
+        <li><code>d[new_key] = value</code> — жаңа жазба қосу</li>
+        <li><code>d[key] = new_value</code> — бар мәнді өзгерту</li>
+        <li><code>d.get(key, default)</code> — кілт жоқ болса, қатесіз әдепкі мән қайтарады</li>
+        <li><code>d.keys()</code>, <code>d.values()</code>, <code>d.items()</code> — кілттер, мәндер, жұптар бойынша айналып шығу</li>
+        <li><code>d.update(other)</code> — сөздікті басқа сөздікпен толықтыру/жаңарту</li>
+        <li><code>dict.fromkeys(iterable, value)</code> — бірдей мәнмен сөздік жасау</li>
+        <li><code>dict(zip(keys_list, values_list))</code> — екі тізімнен сөздік құру</li>
+        <li>Сөздіктер тізімі (<code>list</code> ішінде бірнеше <code>dict</code>) — бір типтегі жазбалар топтамасын сақтауға ыңғайлы</li>
+      </ul>
+
+      <h3>Негізгі мысал</h3>
+      <div class="code-block">
+        <div class="code-block-header">
+          <span>Python</span>
+          <button class="copy-btn" data-copy-target="code-dicts-1">Көшіріп алу</button>
+        </div>
+        <pre><code id="code-dicts-1">student = {'name': 'Asan', 'age': 20}
+student['city'] = 'Aktobe'
+student['age'] = 21
+print(student['name'])
+print(student.get('phone', 'мәлімет жоқ'))
+for key, value in student.items():
+    print(key, value)</code></pre>
+        <div class="code-explain">
+          <p><strong>Жолма-жол түсіндірме:</strong></p>
+          <ul>
+            <li><code>student = {'name': 'Asan', 'age': 20}</code> — екі жазбасы бар сөздік жасалды.</li>
+            <li><code>student['city'] = 'Aktobe'</code> — сөздікке жаңа кілт-мән жұбы қосылды.</li>
+            <li><code>student['age'] = 21</code> — бар кілттің мәні жаңартылды (20 орнына 21).</li>
+            <li><code>print(student['name'])</code> — <code>'name'</code> кілтінің мәнін шығарады.</li>
+            <li><code>student.get('phone', 'мәлімет жоқ')</code> — сөздікте <code>'phone'</code> кілті жоқ, сондықтан қате шықпай, әдепкі мән қайтарылады.</li>
+            <li><code>for key, value in student.items():</code> — сөздіктің барлық кілт-мән жұптарын, енгізілген ретімен, бір-бірлеп шығарады.</li>
+          </ul>
+        </div>
+        <div class="expected-output">
+          <strong>Күтілетін нәтиже:</strong>
+          <pre>Asan
+мәлімет жоқ
+name Asan
+age 21
+city Aktobe</pre>
+        </div>
+      </div>
+
+      <h3>Қосымша мысал: zip() арқылы сөздік құру</h3>
+      <div class="code-block">
+        <div class="code-block-header">
+          <span>Python</span>
+          <button class="copy-btn" data-copy-target="code-dicts-2">Көшіріп алу</button>
+        </div>
+        <pre><code id="code-dicts-2">fields = ['name', 'age', 'job']
+values = ['Dina', 22, 'developer']
+record = dict(zip(fields, values))
+print(record['job'])</code></pre>
+        <div class="code-explain">
+          <p><strong>Жолма-жол түсіндірме:</strong></p>
+          <ul>
+            <li><code>fields</code> — болашақ сөздіктің кілттері тізімі.</li>
+            <li><code>values</code> — сол кілттерге сәйкес мәндер тізімі.</li>
+            <li><code>zip(fields, values)</code> — екі тізімнің элементтерін жұп-жұбымен қосады: <code>('name', 'Dina')</code>, <code>('age', 22)</code>, <code>('job', 'developer')</code>.</li>
+            <li><code>dict(...)</code> — осы жұптардан дайын сөздік жасайды.</li>
+            <li><code>print(record['job'])</code> — <code>'job'</code> кілтінің мәнін шығарады.</li>
+          </ul>
+        </div>
+        <div class="expected-output">
+          <strong>Күтілетін нәтиже:</strong>
+          <pre>developer</pre>
+        </div>
+      </div>
+
+      <p class="note-box"><strong>Маңызды ескерту:</strong> сөздіктің кілттері әрқашан бірегей (қайталанбайды) болуы керек. Қазіргі Python 3 нұсқасында (3.7 және одан кейінгі) сөздік элементтері енгізілген ретімен сақталады. Әдістемелік құралдың кейбір ескі басылымдарында сөздік «реттелмеген» деп сипатталуы мүмкін — бұл ескірген ақпарат, біз осы сабақта заманауи Python 3 тәртібін негізге аламыз.</p>
+    </div>
+
+    <!-- 4. ПРАКТИКАЛЫҚ ТАПСЫРМАЛАР -->
+    <div id="tasks" class="sub-panel">
+      <h2>4. Практикалық тапсырмалар <span class="time-badge">36–50 минут</span></h2>
+      <p>Барлық 8 студент төмендегі үш тапсырманы орындайды. Алдымен өзіңіз шешуге тырысыңыз, қажет болса «Кеңесті ашу» бөлімін пайдаланыңыз.</p>
+
+      <div class="task-card">
+        <h3>1-тапсырма</h3>
+        <p>Берілген тізімнен бірегей (қайталанбайтын) сандарды өсу ретімен шығарыңыз.</p>
+        <p class="given-data">Бастапқы дерек: <code>numbers = [4, 6, 4, 8, 6, 9]</code></p>
+        <details class="hint-block">
+          <summary>Кеңесті ашу</summary>
+          <p><code>set()</code> арқылы қайталанатын элементтерді жойып алыңыз, одан кейін <code>sorted()</code> функциясымен өсу ретіне келтіріңіз.</p>
+        </details>
+        <details class="check-block">
+          <summary>Шешімді тексеруге арналған түсіндірме</summary>
+          <p>Дұрыс нәтиже: <code>[4, 6, 8, 9]</code>. Тізімде 4 саны екі рет, 6 саны да екі рет қайталанған — <code>set()</code> оларды бір-бірден ғана қалдырады, ал <code>sorted()</code> нәтижені өсу ретімен тізімге келтіреді.</p>
+        </details>
+      </div>
+
+      <div class="task-card">
+        <h3>2-тапсырма</h3>
+        <p>Берілген екі жиынның қиылысуын және <code>A - B</code> айырымын табыңыз.</p>
+        <p class="given-data">Бастапқы дерек: <code>A = {2, 4, 6, 8}</code>, <code>B = {4, 7, 8}</code></p>
+        <details class="hint-block">
+          <summary>Кеңесті ашу</summary>
+          <p>Қиылысу үшін <code>&amp;</code> операторын, айырым үшін <code>-</code> операторын қолданыңыз. Нәтижені <code>sorted()</code> арқылы шығарыңыз.</p>
+        </details>
+        <details class="check-block">
+          <summary>Шешімді тексеруге арналған түсіндірме</summary>
+          <p>Қиылысуы (<code>A &amp; B</code>): <code>{4, 8}</code> — <code>sorted()</code> қолдансаңыз <code>[4, 8]</code>. Айырымы (<code>A - B</code>): <code>{2, 6}</code> — <code>sorted()</code> қолдансаңыз <code>[2, 6]</code>.</p>
+        </details>
+      </div>
+
+      <div class="task-card">
+        <h3>3-тапсырма</h3>
+        <p>Берілген сөздікте <code>score</code> мәнін 85-ке жаңартыңыз, жаңа <code>dept</code> кілтін қосыңыз, одан кейін <code>name</code> мен <code>score</code> мәндерін экранға шығарыңыз.</p>
+        <p class="given-data">Бастапқы дерек: <code>student = {'name': 'Dina', 'score': 75}</code></p>
+        <details class="hint-block">
+          <summary>Кеңесті ашу</summary>
+          <p>Мән өзгерту үшін <code>student['score'] = 85</code>, жаңа кілт қосу үшін <code>student['dept'] = '...'</code> деп жазыңыз (бөлім атауын өзіңіз таңдаңыз).</p>
+        </details>
+        <details class="check-block">
+          <summary>Шешімді тексеруге арналған түсіндірме</summary>
+          <p>Дұрыс нәтижеде: <code>score</code> — 85, сөздікте <code>dept</code> кілті пайда болады (мәні — өзіңіз таңдаған бөлім атауы), <code>name</code> өзгеріссіз <code>'Dina'</code> болып қалады.</p>
+        </details>
+      </div>
+
+      <h3>Қорытынды сұрақтар</h3>
+      <div class="quiz-list">
+        <div class="quiz-item">
+          <p class="quiz-question"><strong>1.</strong> Қайталануды жою үшін қандай тип керек?</p>
+          <button class="reveal-btn" data-target="q-final-1">Тексеру</button>
+          <div class="quiz-answer" id="q-final-1" hidden>
+            <p><code>set</code> (жиын) типі — себебі жиында әрбір элемент бірегей болады, қайталанатын мәндер автоматты түрде алынып тасталады.</p>
+          </div>
+        </div>
+        <div class="quiz-item">
+          <p class="quiz-question"><strong>2.</strong> Ат, жас, мамандық сияқты сипаттарды кілтпен сақтау үшін қандай тип тиімді?</p>
+          <button class="reveal-btn" data-target="q-final-2">Тексеру</button>
+          <div class="quiz-answer" id="q-final-2" hidden>
+            <p><code>dict</code> (сөздік) типі — әр сипатты өзіндік кілтпен (мысалы <code>'аты'</code>, <code>'жасы'</code>, <code>'мамандығы'</code>) сақтауға және кілт арқылы тез табуға ыңғайлы.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ===================== ЗЕРТХАНАЛЫҚ САБАҚ ===================== -->
+  <section id="lab" class="tab-panel">
+
+    <nav class="sub-tabs" aria-label="Зертханалық сабақ бөлімдері">
+      <button class="sub-btn active" data-sub="variant">5. Менің нұсқам</button>
+      <button class="sub-btn" data-sub="submit">6. Қорытынды және тапсыру</button>
+    </nav>
+
+    <!-- 5. МЕНІҢ НҰСҚАМ -->
+    <div id="variant" class="sub-panel active">
+      <h2>5. Менің нұсқам</h2>
+
+      <table class="schedule-table">
+        <caption>Зертханалық сабақтың кезеңдері (жалпы 50 минут)</caption>
+        <tr><td>0–5 мин</td><td>Нұсқа алу</td></tr>
+        <tr><td>5–18 мин</td><td>1-есеп — Жиын</td></tr>
+        <tr><td>18–41 мин</td><td>2-есеп — Сөздік</td></tr>
+        <tr><td>41–47 мин</td><td>Тексеру</td></tr>
+        <tr><td>47–50 мин</td><td>Тапсыру</td></tr>
+      </table>
+
+      <p class="note-box"><strong>Ескерту:</strong> есептерді өз компьютеріңіздегі Python ортасында (IDLE, VS Code немесе басқа Python IDE) орындаңыз. Әр есеп файлында кемінде <strong>екі тексеру мысалын</strong> (мысалы, әртүрлі бастапқы деректермен) көрсетіңіз.</p>
+
+      <div class="variant-picker">
+        <p><strong>Нұсқаңызды таңдаңыз (1–8):</strong></p>
+        <div class="variant-buttons" id="variantButtons">
+          <button class="variant-btn" data-variant="1">1</button>
+          <button class="variant-btn" data-variant="2">2</button>
+          <button class="variant-btn" data-variant="3">3</button>
+          <button class="variant-btn" data-variant="4">4</button>
+          <button class="variant-btn" data-variant="5">5</button>
+          <button class="variant-btn" data-variant="6">6</button>
+          <button class="variant-btn" data-variant="7">7</button>
+          <button class="variant-btn" data-variant="8">8</button>
+          <button class="variant-btn random-btn" id="randomVariantBtn">Кездейсоқ таңдау</button>
+        </div>
+        <p id="selectedVariantLabel">Таңдалған нұсқа: <strong>жоқ</strong></p>
+        <button class="print-btn" id="printVariantBtn">Парақты басып шығару</button>
+      </div>
+
+      <div class="variant-content" id="variantContent">
+        <p class="variant-placeholder" id="variantPlaceholder">Жоғарыдан өз нұсқаңыздың нөмірін таңдаңыз немесе «Кездейсоқ таңдау» батырмасын басыңыз.</p>
+
+        <!-- НҰСҚА 1 -->
+        <article class="variant-panel" data-variant-panel="1" hidden>
+          <h3>1-нұсқа</h3>
+
+          <h4>1-есеп. Жиын — Зертханалық №10 жұмыс, әдістемедегі 2-тапсырма (ПДФ 178-б.)</h4>
+          <blockquote class="original-task">A={2;4;6;8;10} және B={3;6;9;12} жиындары берілген. Екі жиынның қиылысуын және бірігуін табыңыз.</blockquote>
+          <div class="code-block">
+            <div class="code-block-header"><span>Оқытушы ұсынған бастапқы деректер</span>
+              <button class="copy-btn" data-copy-target="v1-set">Көшіріп алу</button></div>
+            <pre><code id="v1-set">A = {2, 4, 6, 8, 10}
+B = {3, 6, 9, 12}</code></pre>
+          </div>
+
+          <h4>2-есеп. Сөздік — Зертханалық №11 жұмыс, әдістемедегі 10-тапсырма (ПДФ 180–181-б.)</h4>
+          <blockquote class="original-task">Дәріханадағы дәрілер туралы келесі мәліметтер белгілі болсын: дәрілік препараттың аты, бағасы, саны, сақтау мерзімі. Дәріханадғы барлық дәрілердің қанша тұратынын және сақтау мерзімі 3 айдан артық препараттарды анықтау программасын құрыңыз.</blockquote>
+          <div class="code-block">
+            <div class="code-block-header"><span>Оқытушы ұсынған бастапқы деректер</span>
+              <button class="copy-btn" data-copy-target="v1-dict">Көшіріп алу</button></div>
+            <pre><code id="v1-dict">drugs = [
+    {"атауы": "Парацетамол", "бағасы": 350, "саны": 5, "мерзімі": 8},
+    {"атауы": "Витамин C", "бағасы": 900, "саны": 2, "мерзімі": 2},
+    {"атауы": "Сироп", "бағасы": 1200, "саны": 3, "мерзімі": 6},
+    {"атауы": "Спрей", "бағасы": 1500, "саны": 1, "мерзімі": 3}
+]</code></pre>
+          </div>
+          <p class="teacher-clarify"><strong>Оқытушының нақтылауы:</strong> сөздік есебінде барлық дәрілердің жалпы құны: баға × сан қосындысы. Мерзімі 3 айдан артықтарды жеке шығарыңыз.</p>
+
+          <p class="submit-files">Файл атаулары: <code>set_variant_1.py</code>, <code>dict_variant_1.py</code></p>
+        </article>
+
+        <!-- НҰСҚА 2 -->
+        <article class="variant-panel" data-variant-panel="2" hidden>
+          <h3>2-нұсқа</h3>
+
+          <h4>1-есеп. Жиын — Зертханалық №10 жұмыс, әдістемедегі 7-тапсырма (ПДФ 178-б.)</h4>
+          <blockquote class="original-task">A жиыны берілген. Жиынның 5ке еселі сандарын жойыңыз.</blockquote>
+          <div class="code-block">
+            <div class="code-block-header"><span>Оқытушы ұсынған бастапқы деректер</span>
+              <button class="copy-btn" data-copy-target="v2-set">Көшіріп алу</button></div>
+            <pre><code id="v2-set">A = {5, 7, 10, 11, 15, 20, 24}</code></pre>
+          </div>
+
+          <h4>2-есеп. Сөздік — Зертханалық №11 жұмыс, әдістемедегі 9-тапсырма (ПДФ 180–181-б.)</h4>
+          <blockquote class="original-task">Тұрғындар санағының нәтижелері берілген болсын. 1990 ж. кейін туылған тұрғындардың фамилиясын, атын және жалпы санын анықтайтын программа құрыңыз.</blockquote>
+          <div class="code-block">
+            <div class="code-block-header"><span>Оқытушы ұсынған бастапқы деректер</span>
+              <button class="copy-btn" data-copy-target="v2-dict">Көшіріп алу</button></div>
+            <pre><code id="v2-dict">people = [
+    {"тегі": "Әлиев", "аты": "Данияр", "жылы": 1994},
+    {"тегі": "Ким", "аты": "Диана", "жылы": 1988},
+    {"тегі": "Қабылбек", "аты": "Ару", "жылы": 2003},
+    {"тегі": "Омар", "аты": "Елдос", "жылы": 1990}
+]</code></pre>
+          </div>
+          <p class="teacher-clarify"><strong>Оқытушының нақтылауы:</strong> 1990 жылдан кейін деген шарт: жылы &gt; 1990 (1990 жылдың өзі кірмейді).</p>
+
+          <p class="submit-files">Файл атаулары: <code>set_variant_2.py</code>, <code>dict_variant_2.py</code></p>
+        </article>
+
+        <!-- НҰСҚА 3 -->
+        <article class="variant-panel" data-variant-panel="3" hidden>
+          <h3>3-нұсқа</h3>
+
+          <h4>1-есеп. Жиын — Зертханалық №10 жұмыс, әдістемедегі 8-тапсырма (ПДФ 178-б.)</h4>
+          <blockquote class="original-task">A={2; 6;8;9} және B={3;6;9 } жиындары берілген. Екі жиынның бірігуін және айырымын табыңыз.</blockquote>
+          <div class="code-block">
+            <div class="code-block-header"><span>Оқытушы ұсынған бастапқы деректер</span>
+              <button class="copy-btn" data-copy-target="v3-set">Көшіріп алу</button></div>
+            <pre><code id="v3-set">A = {2, 6, 8, 9}
+B = {3, 6, 9}</code></pre>
+          </div>
+
+          <h4>2-есеп. Сөздік — Зертханалық №11 жұмыс, әдістемедегі 6-тапсырма (ПДФ 180–181-б.)</h4>
+          <blockquote class="original-task">Кітаптардың аты, авторы, шыққан жылы, бағасы және тиражы бойынша сұрыпталған кітаптар тізімін шығарыңыз.</blockquote>
+          <div class="code-block">
+            <div class="code-block-header"><span>Оқытушы ұсынған бастапқы деректер</span>
+              <button class="copy-btn" data-copy-target="v3-dict">Көшіріп алу</button></div>
+            <pre><code id="v3-dict">books = [
+    {"атауы": "Python негіздері", "авторы": "А. Сәрсен", "жылы": 2020, "бағасы": 3800, "тиражы": 700},
+    {"атауы": "Алгоритмдер", "авторы": "Н. Жан", "жылы": 2017, "бағасы": 4200, "тиражы": 350},
+    {"атауы": "Деректер", "авторы": "М. Аман", "жылы": 2023, "бағасы": 3000, "тиражы": 500},
+    {"атауы": "Программалау", "авторы": "Е. Қуат", "жылы": 2019, "бағасы": 5500, "тиражы": 450}
+]</code></pre>
+          </div>
+          <p class="teacher-clarify"><strong>Оқытушының нақтылауы:</strong> түпнұсқада сұрыптау критерийінің реті нақтыланбаған. Тексеруде екі бөлек сұрыптау жасаңыз: шыққан жылы бойынша өсу ретімен және бағасы бойынша өсу ретімен.</p>
+
+          <p class="submit-files">Файл атаулары: <code>set_variant_3.py</code>, <code>dict_variant_3.py</code></p>
+        </article>
+
+        <!-- НҰСҚА 4 -->
+        <article class="variant-panel" data-variant-panel="4" hidden>
+          <h3>4-нұсқа</h3>
+
+          <h4>1-есеп. Жиын — Зертханалық №10 жұмыс, әдістемедегі 10-тапсырма (ПДФ 178-б.)</h4>
+          <blockquote class="original-task">А жиынындағы ең кіші элементі В жиынына орналастыру;</blockquote>
+          <div class="code-block">
+            <div class="code-block-header"><span>Оқытушы ұсынған бастапқы деректер</span>
+              <button class="copy-btn" data-copy-target="v4-set">Көшіріп алу</button></div>
+            <pre><code id="v4-set">A = {4, 7, 10, 12}
+B = {1, 9}</code></pre>
+          </div>
+
+          <h4>2-есеп. Сөздік — Зертханалық №11 жұмыс, әдістемедегі 5-тапсырма (ПДФ 180–181-б.)</h4>
+          <blockquote class="original-task">«Телефондық анықтаманы» модельдейтін программа құру, әйел адамдардың телефон номірі мен мекен жайын шығару.</blockquote>
+          <div class="code-block">
+            <div class="code-block-header"><span>Оқытушы ұсынған бастапқы деректер</span>
+              <button class="copy-btn" data-copy-target="v4-dict">Көшіріп алу</button></div>
+            <pre><code id="v4-dict">contacts = [
+    {"аты": "Айгүл", "жынысы": "әйел", "телефон": "111-22-33", "мекенжай": "Ақтөбе, 1-үй"},
+    {"аты": "Нұрлан", "жынысы": "ер", "телефон": "222-33-44", "мекенжай": "Ақтөбе, 2-үй"},
+    {"аты": "Дина", "жынысы": "әйел", "телефон": "333-44-55", "мекенжай": "Ақтөбе, 3-үй"},
+    {"аты": "Аян", "жынысы": "ер", "телефон": "444-55-66", "мекенжай": "Ақтөбе, 4-үй"}
+]</code></pre>
+          </div>
+          <p class="teacher-clarify"><strong>Оқытушының нақтылауы:</strong> «В жиынына орналастыру» тіркесі осы сабақта B жиынына элемент қосу деп нақтыланды; A жиынынан жою талап етілмейді.</p>
+
+          <p class="submit-files">Файл атаулары: <code>set_variant_4.py</code>, <code>dict_variant_4.py</code></p>
+        </article>
+
+        <!-- НҰСҚА 5 -->
+        <article class="variant-panel" data-variant-panel="5" hidden>
+          <h3>5-нұсқа</h3>
+
+          <h4>1-есеп. Жиын — Зертханалық №10 жұмыс, әдістемедегі 9-тапсырма (ПДФ 178-б.)</h4>
+          <blockquote class="original-task">А жиынынан К элементке еселенген барлық сандарды жою;</blockquote>
+          <div class="code-block">
+            <div class="code-block-header"><span>Оқытушы ұсынған бастапқы деректер</span>
+              <button class="copy-btn" data-copy-target="v5-set">Көшіріп алу</button></div>
+            <pre><code id="v5-set">A = {3, 5, 6, 9, 11, 14}
+K = 3</code></pre>
+          </div>
+
+          <h4>2-есеп. Сөздік — Зертханалық №11 жұмыс, әдістемедегі 7-тапсырма (ПДФ 180–181-б.)</h4>
+          <blockquote class="original-task">Теміржол кассасында төмендегідей мәлімет бар: поездің номірі, баратын жері, билеттің бар не жоғы. Бос орындар саны 100-ден асатын поездардың номірін, баратын жерін экранға шығарыңыз.</blockquote>
+          <div class="code-block">
+            <div class="code-block-header"><span>Оқытушы ұсынған бастапқы деректер</span>
+              <button class="copy-btn" data-copy-target="v5-dict">Көшіріп алу</button></div>
+            <pre><code id="v5-dict">trains = [
+    {"нөмірі": "011", "бағыт": "Алматы", "билет_бар": True, "бос_орын": 80},
+    {"нөмірі": "022", "бағыт": "Астана", "билет_бар": True, "бос_орын": 132},
+    {"нөмірі": "033", "бағыт": "Атырау", "билет_бар": True, "бос_орын": 101},
+    {"нөмірі": "044", "бағыт": "Орал", "билет_бар": False, "бос_орын": 0}
+]</code></pre>
+          </div>
+          <p class="teacher-clarify"><strong>Оқытушының нақтылауы:</strong> K осы мысалда 3; негізгі талап — A ішінен K-ге қалдықсыз бөлінетіндерді жою. Пойызда бос орын &gt; 100 шарты қолданылады.</p>
+
+          <p class="submit-files">Файл атаулары: <code>set_variant_5.py</code>, <code>dict_variant_5.py</code></p>
+        </article>
+
+        <!-- НҰСҚА 6 -->
+        <article class="variant-panel" data-variant-panel="6" hidden>
+          <h3>6-нұсқа</h3>
+
+          <h4>1-есеп. Жиын — Зертханалық №10 жұмыс, әдістемедегі 12-тапсырма (ПДФ 178-б.)</h4>
+          <blockquote class="original-task">А жиынындағы ең үлкен элементі В жиынына орналастыру;</blockquote>
+          <div class="code-block">
+            <div class="code-block-header"><span>Оқытушы ұсынған бастапқы деректер</span>
+              <button class="copy-btn" data-copy-target="v6-set">Көшіріп алу</button></div>
+            <pre><code id="v6-set">A = {3, 8, 11, 16}
+B = {1, 4}</code></pre>
+          </div>
+
+          <h4>2-есеп. Сөздік — Зертханалық №11 жұмыс, әдістемедегі 4-тапсырма (ПДФ 180–181-б.)</h4>
+          <blockquote class="original-task">Мекеме қызметкерлері туралы мәліметтер сөздік түрінде анықталған. Ер адамдардың мамандығы мен жасын көрсетіп, экранға тізім шығарыңыз.</blockquote>
+          <div class="code-block">
+            <div class="code-block-header"><span>Оқытушы ұсынған бастапқы деректер</span>
+              <button class="copy-btn" data-copy-target="v6-dict">Көшіріп алу</button></div>
+            <pre><code id="v6-dict">employees = [
+    {"аты": "Ержан", "жынысы": "ер", "мамандығы": "программист", "жасы": 27},
+    {"аты": "Айгүл", "жынысы": "әйел", "мамандығы": "дизайнер", "жасы": 26},
+    {"аты": "Бекзат", "жынысы": "ер", "мамандығы": "инженер", "жасы": 31},
+    {"аты": "Дана", "жынысы": "әйел", "мамандығы": "талдаушы", "жасы": 24}
+]</code></pre>
+          </div>
+          <p class="teacher-clarify"><strong>Оқытушының нақтылауы:</strong> «В жиынына орналастыру» осы сабақта B жиынына қосу деп нақтыланды; A өзгермейді.</p>
+
+          <p class="submit-files">Файл атаулары: <code>set_variant_6.py</code>, <code>dict_variant_6.py</code></p>
+        </article>
+
+        <!-- НҰСҚА 7 -->
+        <article class="variant-panel" data-variant-panel="7" hidden>
+          <h3>7-нұсқа</h3>
+
+          <h4>1-есеп. Жиын — Зертханалық №10 жұмыс, әдістемедегі 11-тапсырма (ПДФ 178-б.)</h4>
+          <blockquote class="original-task">А және В аралықтағы бүтін сандардан жиын құру</blockquote>
+          <div class="code-block">
+            <div class="code-block-header"><span>Оқытушы ұсынған бастапқы деректер</span>
+              <button class="copy-btn" data-copy-target="v7-set">Көшіріп алу</button></div>
+            <pre><code id="v7-set">A = 4
+B = 11</code></pre>
+          </div>
+
+          <h4>2-есеп. Сөздік — Зертханалық №11 жұмыс, әдістемедегі 8-тапсырма (ПДФ 180–181-б.)</h4>
+          <blockquote class="original-task">Өзіңіз оқитын топтың тізімін алфавит бойынша реттеп туған жылын көрсетіп экранға шығарыңыз.</blockquote>
+          <div class="code-block">
+            <div class="code-block-header"><span>Оқытушы ұсынған бастапқы деректер</span>
+              <button class="copy-btn" data-copy-target="v7-dict">Көшіріп алу</button></div>
+            <pre><code id="v7-dict">students = [
+    {"аты": "Мақсат", "туған_жылы": 2005},
+    {"аты": "Бекзат", "туған_жылы": 2004},
+    {"аты": "Айсұлтан", "туған_жылы": 2005},
+    {"аты": "Данияр", "туған_жылы": 2006}
+]</code></pre>
+          </div>
+          <p class="teacher-clarify"><strong>Оқытушының нақтылауы:</strong> А және В аралығы осы тексеруде екі шеткі мәнді қоса қамтиды: [4, 11]. Топ аты-жөндері шартты мысал; өз тобыңыздың тізімі болса, алмастыра аласыз.</p>
+
+          <p class="submit-files">Файл атаулары: <code>set_variant_7.py</code>, <code>dict_variant_7.py</code></p>
+        </article>
+
+        <!-- НҰСҚА 8 -->
+        <article class="variant-panel" data-variant-panel="8" hidden>
+          <h3>8-нұсқа</h3>
+
+          <h4>1-есеп. Жиын — Зертханалық №10 жұмыс, әдістемедегі 6-тапсырма (ПДФ 178-б.)</h4>
+          <blockquote class="original-task">A жиыны берілген. Жиынның 3 ке еселі сандарын экранға шығарыңыз.</blockquote>
+          <div class="code-block">
+            <div class="code-block-header"><span>Оқытушы ұсынған бастапқы деректер</span>
+              <button class="copy-btn" data-copy-target="v8-set">Көшіріп алу</button></div>
+            <pre><code id="v8-set">A = {3, 4, 6, 8, 9, 12, 14}</code></pre>
+          </div>
+
+          <h4>2-есеп. Сөздік — Зертханалық №11 жұмыс, әдістемедегі 11-тапсырма (ПДФ 180–181-б.)</h4>
+          <blockquote class="original-task">Фирма қызметкерлері туралы мәлімет берілген. Қызметкерлердің фамилиясын және атын, сонымен қатар әйел адам болса көзінің түсін, ер адам болса темекі шегетін, шекпейтіндігін көрсететін тізімді экранға шығарыңыз.</blockquote>
+          <div class="code-block">
+            <div class="code-block-header"><span>Оқытушы ұсынған бастапқы деректер</span>
+              <button class="copy-btn" data-copy-target="v8-dict">Көшіріп алу</button></div>
+            <pre><code id="v8-dict">staff = [
+    {"тегі": "Қасымов", "аты": "Айдар", "жынысы": "ер", "темекі_шегеді": False},
+    {"тегі": "Омарова", "аты": "Дина", "жынысы": "әйел", "көз_түсі": "қоңыр"},
+    {"тегі": "Беков", "аты": "Самат", "жынысы": "ер", "темекі_шегеді": True},
+    {"тегі": "Әлиева", "аты": "Айжан", "жынысы": "әйел", "көз_түсі": "көк"}
+]</code></pre>
+          </div>
+          <p class="teacher-clarify"><strong>Оқытушының нақтылауы:</strong> жиын элементтерін оқуға ыңғайлы шығару үшін <code>sorted()</code> қолданыңыз. Сөздік есебінде жынысына қарай тиісті өрісті ғана шығарыңыз.</p>
+
+          <p class="submit-files">Файл атаулары: <code>set_variant_8.py</code>, <code>dict_variant_8.py</code></p>
+        </article>
+      </div>
+    </div>
+
+    <!-- 6. ҚОРЫТЫНДЫ ЖӘНЕ ТАПСЫРУ -->
+    <div id="submit" class="sub-panel">
+      <h2>6. Қорытынды және тапсыру</h2>
+
+      <div class="note-box">
+        <p><strong>Тапсыру алдындағы тізім:</strong></p>
+        <ul>
+          <li>Екі файл дайын: <code>set_variant_N.py</code> және <code>dict_variant_N.py</code> (мұндағы <code>N</code> — өз нұсқаңыздың нөмірі).</li>
+          <li>Код Python 3 ортасында (IDLE / VS Code / PyCharm және т.б.) қатесіз орындалады.</li>
+          <li>Әр файлда кемінде <strong>екі тексеру мысалы</strong> көрсетілген (мысалы, әртүрлі бастапқы деректермен қайта тексеру немесе комментарий түріндегі түсініктеме).</li>
+          <li>Файл басында аты-жөніңіз және нұсқа нөмірі комментарий ретінде жазылған.</li>
+        </ul>
+      </div>
+
+      <p class="submit-location">Тапсыру орны: <span class="editable">______________________________</span> <span class="hint-small">(оқытушы көрсетеді)</span></p>
+
+      <h3>Бағалау рубрикасы (100 балл)</h3>
+      <table class="rubric-table">
+        <thead>
+          <tr><th>Критерий</th><th>Балл</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Жиын есебінің дұрыстығы</td><td>40</td></tr>
+          <tr><td>Сөздік есебінің дұрыстығы</td><td>40</td></tr>
+          <tr><td>Екі тексеру жағдайының болуы</td><td>10</td></tr>
+          <tr><td>Қысқа түсіндірменің болуы</td><td>10</td></tr>
+          <tr><td><strong>Барлығы</strong></td><td><strong>100</strong></td></tr>
+        </tbody>
+      </table>
+      <p class="note-box">Соңғы бағаны оқытушы қояды. Бұл сайт кодты автоматты түрде тексермейді, себебі JavaScript Python кодын орындамайды.</p>
+
+      <button class="print-btn" id="printSubmitBtn">Парақты басып шығару</button>
+    </div>
+
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <p><strong>Дереккөз:</strong> №8 дәріс «Жиындар» (ПДФ 67–74-б.); №9 дәріс «Сөздіктер түсінігі және құру принциптері» (ПДФ 74–80-б.); №10 зертханалық жұмыс «Жиын» (ПДФ 177–178-б., тапсырмалар 178-б.); №11 зертханалық жұмыс «Сөздік» (ПДФ 178–181-б., тапсырмалар 180–181-б.).</p>
+    <p>Статикалық оқу сайты — сервер мен дерекқорсыз, тек жергілікті HTML/CSS/JS файлдары арқылы жұмыс істейді.</p>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
